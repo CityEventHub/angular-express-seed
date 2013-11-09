@@ -1,4 +1,5 @@
-# Angular Express Seed
+# City Event Hub
+#### Starting Node/Express/Angular seed at [erikdonohoo/angular-express-seed](https://github.com/erikdonohoo/angular-express-seed)
 
 Start an awesome app with AngularJS on the front, Express + Node on the back. This project is an
 application skeleton for a typical [AngularJS](http://angularjs.org/) web app for those who want

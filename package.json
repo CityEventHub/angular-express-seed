@@ -1,8 +1,9 @@
 {
-    "name": "mtc-angular-express-seed"
-  , "version": "0.0.1"
-  , "private": true
-  , "dependencies": {
-      "express": "3.4.2"
-  }
+	"name": "mtc-angular-express-seed",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"express": "3.4.2",
+		"mongoose": "3.6"
+	}
 }

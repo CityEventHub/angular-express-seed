@@ -2,20 +2,15 @@
 
 /* Controllers */
 
-function AppCtrl($scope, $http) {
-  $http({method: 'GET', url: '/api/name'}).
-  success(function(data, status, headers, config) {
-    $scope.name = data.name;
-  }).
-  error(function(data, status, headers, config) {
-    $scope.name = 'Error!'
-  });
-}
+angular.module('myApp.controllers', [])
+.controller('AppCtrl',['$scope', '$http', function($scope, $http) {
 
-function MyCtrl1() {}
-MyCtrl1.$inject = [];
-
-
-function MyCtrl2() {
-}
-MyCtrl2.$inject = [];
+	$http({method: 'GET', url: '/api/name'}).
+	success(function(data, status, headers, config) {
+		$scope.name = data.name;
+	}).
+	error(function(data, status, headers, config) {
+		$scope.name = 'Error!'
+	});
+	
+}]);
