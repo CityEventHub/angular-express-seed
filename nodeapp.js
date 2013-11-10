@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-var express = require('express'),
-	mongoose = require('mongoose');
+express = require('express');
+mongoose = require('mongoose');
 
 mongoose.connection.on('open', function (ref) {
 	console.log('Connected to mongo server.');
@@ -27,6 +27,7 @@ app.use(express.json())
 //app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static('public'));
+app.use(express.errorHandler());
 app.use(app.router);
 
 // if we were unable to fetch a file
@@ -49,9 +50,8 @@ app.use(function(err, req, res, next){
 	}
 });
 
-/**
- * Routes
- */
+// setup schemas for the api
+require('./routes/schemas');
 
 // serve index and view partials
 require('./routes').load(app);
