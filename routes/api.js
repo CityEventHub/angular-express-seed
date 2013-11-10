@@ -51,7 +51,10 @@ exports.names = {
 			if(!request.body.name || !request.params.name)
 				if (name) return response.status(400).json({error: "Missing Name."});
 			
-			Name.findByIdAndUpdate(request.body._id, request.body, function (err, name) {
+			var id = request.body._id;
+			delete request.body._id;
+
+			Name.findByIdAndUpdate(id, request.body, function (err, name) {
 				if (err) return response.status(500).json({error: err.name + ": " + err.message});
 				if (!name) return response.status(404).json({error: "Name not found."});
 				response.send(name);
