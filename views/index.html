@@ -6,25 +6,34 @@
 	<link rel="stylesheet" type="text/css" href="/css/less.css">
 </head>
 <body>
-	<header class="nav-body" ng-include="'header.html'"></header>
+	<header class="nav-body" ng-include="'partials/header'"></header>
 	<main class="main-body" ng-view></main>
 
-	<!-- Minified versions -->
+	<!-- Minified versions __>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-resource.min.js"></script>
-	<!---->
+	<!__ -->
 
-	<!-- Full versions __>
+	<!-- Full versions -->
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-resource.js"></script>
-	<!__  -->
+	<!--  -->
 
+	<!-- Main App/router -->
 	<script src="js/app.js"></script>
-	<script src="js/services/services.js"></script>
-	<script src="js/controllers/controllers.js"></script>
-	<script src="js/filters/filters.js"></script>
+
+	<!-- Controllers -->
+	<script src="js/controllers/navigation-ctrl.js"></script>
+
+	<!-- Directives -->
 	<script src="js/directives/directives.js"></script>
+
+	<!-- Filters -->
+	<script src="js/filters/filters.js"></script>
+
+	<!-- Services -->
+	<script src="js/services/services.js"></script>
 </body>
 </html>

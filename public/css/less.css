@@ -1,2 +1,8 @@
-
-.partial-header{width:100%}
+*,*:before,*:after{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+.partial-404{width:100%}
+.partial-header{width:100%}.partial-header .nav-links{padding-left:0;list-style:none;border-bottom:.1em solid #000;margin-bottom:2em;padding:0 0 .5em}.partial-header .nav-links:before{content:"["}
+.partial-header .nav-links:after{content:"]"}
+.partial-header .nav-links>li{display:inline}.partial-header .nav-links>li:before{content:"|";padding-left:.15em;padding-right:.15em}
+.partial-header .nav-links>li:nth-child(1):before{content:"";padding-left:0}
+.page-sandbox{width:100%}
+.page-homepage{width:100%}

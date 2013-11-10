@@ -5,8 +5,8 @@
 angular.module('CEH', ['ngRoute','ngResource','CEH.controllers', 'CEH.filters', 'CEH.services', 'CEH.directives'])
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
-	$routeProvider.when('/', {templateUrl: 'partials/homepage', controller: 'AppCtrl'});
-	$routeProvider.when('/404', {templateUrl: 'partials/404'});
-	$routeProvider.otherwise({redirectTo: '/404'});
+	$routeProvider.when('/', {templateUrl: '/page/homepage'});
+	$routeProvider.when('/sandbox', {templateUrl: '/page/sandbox'});
+	$routeProvider.otherwise({templateUrl: '/partials/404'});
 	$locationProvider.html5Mode(true);
 }]);

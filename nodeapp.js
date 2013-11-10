@@ -29,6 +29,26 @@ app.use(express.methodOverride());
 app.use(express.static('public'));
 app.use(app.router);
 
+// if we were unable to fetch a file
+app.use(function(err, req, res, next){
+	if(err.code == 'ENOENT') {
+		res.status(404);
+
+		if (req.accepts('html')) {
+			res.sendfile("views/index.html");
+		
+		} else if (req.accepts('json')) {
+			res.send({error: 'Not found'});
+
+		} else {
+			res.type('txt').send('Not found');
+		}
+	
+	} else {
+		next(err);
+	}
+});
+
 /**
  * Routes
  */
@@ -41,7 +61,7 @@ require('./routes/api').load(app);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', function(req, res) {
-	res.status(404).sendfile('views/');
+	res.status(404).sendfile('views/index.html');
 });
 
 // Start server
