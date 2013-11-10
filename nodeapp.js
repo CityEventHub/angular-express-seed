@@ -4,8 +4,6 @@
  */
 
 var express = require('express'),
-	routes = require('./routes'),
-	api = require('./routes/api'),
 	mongoose = require('mongoose');
 
 mongoose.connection.on('open', function (ref) {
@@ -36,17 +34,17 @@ app.use(app.router);
  */
 
 // serve index and view partials
-app.get('/', routes.index);
-app.get('/partials/:name', routes.partials);
+require('./routes').load(app);
 
-// JSON API
-app.get('/api/name', api.name);
+// serve JSON API
+require('./routes/api').load(app);
 
 // redirect all others to the index (HTML5 history)
-app.get('*', routes.index);
+app.get('*', function(req, res) {
+	res.status(404).sendfile('views/');
+});
 
 // Start server
-
 app.listen(app.get('port'), function(){
 	console.log("Express server listening on port %d in %s mode", app.get('port'), app.settings.env);
 });

@@ -1,7 +1,7 @@
 {
-	"name": "mtc-angular-express-seed",
-	"version": "0.0.1",
-	"private": true,
+	"name": "city-event-hub",
+	"version": "0.0.2",
+	"private": false,
 	"dependencies": {
 		"express": "3.4.2",
 		"mongoose": "3.6"

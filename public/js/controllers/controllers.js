@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', [])
+angular.module('CEH.controllers', [])
 .controller('AppCtrl',['$scope', '$http', function($scope, $http) {
 
 	$http({method: 'GET', url: '/api/name'}).

@@ -25,3 +25,25 @@ heroku plugins:install git://github.com/ddollar/heroku-config.git
 heroku config:pull  
 sudo npm install  
 foreman start
+
+
+## [LESS](http://lesscss.org/) (optional)
+#### About:
+Note: Using Less is optional. Instead you can just create a css file for the page in the public/css/ directory and reference that stylesheet in index.html, however the ease of Less makes it a great tool in speeding up css development.
+
+LESS is a CSS simplifier. It suports variables, mixins, operations, and functions. It also supports nested selectors for greater control, and major simplification.  Less is compiled into CSS that can be minified.  After every edit Less must be compiled for the changes to update.  You can compile it by this command `lessc less/less.less > public/css/less.css, however that gets tedious after a while.  
+
+Instead we can use Less2Css package plugin for Sublime.  Every time you save it does a quick scan and compiles less without you needing to do anything.  To install, add the [Sublime Package Manager](https://sublime.wbond.net/installation) to sublime. After restarting sublime install Less2Css by using Ctrl+Shift+P, type "install" and hit enter, then type "Less2Css" and hit enter.  
+
+This is the configuration I'm using for the Less2Css plugin. It should go in Preferences->Package Settings->Less2Css->Settings - User:
+> {
+>   "lesscCommand": false,
+>   "lessBaseDir": "./less",
+>   "outputDir": "./public/css",
+>   "outputFile": "less.css",
+>   "minify": true,
+>   "autoCompile": true,
+>   "showErrorWithWindow": true,
+>   "main_file": "less.less",
+>   "ignorePrefixedFiles": false
+> }
