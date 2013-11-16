@@ -1,74 +1,23 @@
 
-// setup schemas for the api
-require('./schemas.js');
-
 /**
  * API - Serve JSON to our AngularJS client
- * To setup API, make a function that serves the JSON
- * Afterwards, set up the route in the main "exports" function.
  */
 
+// setup schemas for the api
+require('./schemas.js');
+// get RESTful CRUD
+var crud = require('./crud.js');
+
+
 exports.load = function(app) {
-	app.get('/api/names', exports.names.collection.get);
-	app.post('/api/names', exports.names.collection.post);
-	
-	app.get('/api/names/:name', exports.names.document.get);
-	app.put('/api/names/:name', exports.names.document.put);
-	app.delete('/api/names/:name', exports.names.document.delete);
+	app.get('/api/names', crud.getCollection(Name));
+	app.put('/api/names', crud.putCollection(Name));
+	app.post('/api/names', crud.postCollection(Name));
+	app.delete('/api/names', crud.deleteCollection(Name));
 
-};
+	app.get('/api/names/:_id', crud.getDocument(Name));
+	app.put('/api/names/:_id', crud.putDocument(Name));
+	// app.post('/api/names/:_id', crud.postDocument(Name));
+	app.delete('/api/names/:_id', crud.deleteDocument(Name));
 
-exports.names = {
-	collection: {
-		get: function (request, response) {
-			Name.find({}, function(err, names) {
-				if (err) return response.status(500).json({error: err.name + ": " + err.message});
-				if (!names) return response.status(404).json({error: "Names not found."});
-				response.send(names);
-			});
-		},
-		post: function (request, response) {
-			if(!request.body.name) return response.status(400).json({error: "Missing Name."});
-			
-			Name.findOne({name: request.body.name}, function(err, name) {
-				if (err) return response.status(500).json({error: err.name + ": " + err.message});
-				if (name) return response.status(400).json({error: "Name already exists."});
-				
-				var name = new Name(request.body);
-				name.save(function(err, name) {
-					if (err) return response.status(500).json({error: err.name + ": " + err.message});
-					response.json(name);
-				});
-			});
-		}
-	},
-	document: {
-		get: function (request, response) {
-			Name.findOne({name: request.params.name}, function(err, name) {
-				if (err) return response.status(500).json({error: err.name + ": " + err.message});
-				if (!name) return response.status(404).json({error: "Name not found."});
-				response.send(name);
-			});
-		},
-		put: function (request, response) {
-			if(!request.body.name || !request.params.name)
-				if (name) return response.status(400).json({error: "Missing Name."});
-			
-			var id = request.body._id;
-			delete request.body._id;
-
-			Name.findByIdAndUpdate(id, request.body, function (err, name) {
-				if (err) return response.status(500).json({error: err.name + ": " + err.message});
-				if (!name) return response.status(404).json({error: "Name not found."});
-				response.send(name);
-			});
-		},
-		delete: function (request, response) {
-			Name.findOneAndRemove({name: request.params.name}, function(err, name) {
-				if (err) return response.status(500).json({error: err.name + ": " + err.message});
-				if (!name) return response.status(404).json({error: "Name not found."});
-				response.send(name);
-			});
-		}
-	}
 };
