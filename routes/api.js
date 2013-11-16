@@ -1,4 +1,7 @@
 
+// setup schemas for the api
+require('./schemas.js');
+
 /**
  * API - Serve JSON to our AngularJS client
  * To setup API, make a function that serves the JSON

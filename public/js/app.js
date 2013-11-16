@@ -7,16 +7,16 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 ,function($routeProvider,  $locationProvider,  $provide) {
 
 	$routeProvider.when('/', {
-		templateUrl: '/page/homepage'
+		templateUrl: '/views/pages/homepage.html'
 	});
 
 	$routeProvider.when('/sandbox', {
-		templateUrl: '/page/sandbox',
+		templateUrl: '/views/pages/sandbox.html',
 		controller: 'SandboxCtrl'
 	});
 	
 	$routeProvider.otherwise( {
-		templateUrl: '/partials/404'
+		templateUrl: '/views/partials/404.html'
 	});
 	
 	$locationProvider.html5Mode(true);
