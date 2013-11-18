@@ -5,6 +5,7 @@
 
 express = require('express');
 mongoose = require('mongoose');
+require("./routes/monkey-patches.js");
 
 mongoose.connection.on('open', function (ref) {
 	console.log('Connected to mongo server.');
@@ -18,7 +19,6 @@ mongoose.connect(process.env.MONGOLAB_URI);
 
 var app = module.exports = express();
 
-require("./routes/monkey-patches.js");
 
 // Configuration
 app.set('port', process.env.PORT || 5000);
@@ -29,19 +29,7 @@ app.use(express.json())
 //app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static('public'));
-
-app.use((function duckPunch(original) {
-	return function errorHandler(err, req, res, next) {
-		// cancel the console log when a client sends a malformed request
-		// this should not show up in the server logs because the server did not crash
-		var consoleErr = console.error;
-		console.error = function noop() {};
-		var result = original.apply(this, arguments);
-		console.error = consoleErr;
-		return result;
-	}
-})(express.errorHandler()));
-
+app.use(express.errorHandler());
 app.use(app.router);
 
 

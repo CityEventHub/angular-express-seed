@@ -1,4 +1,15 @@
 
+/**
+ * http://en.wikipedia.org/wiki/Monkey_patch
+ * A monkey patch is a way to extend or modify the run-time code of dynamic languages
+ * without altering the original source code. This process has also been termed
+ * duck punching and shaking the bag.
+ * 
+ * Monkey patching is used to:
+ * Modify/extend behaviour of a third-party product without maintaining a private copy of the source code
+ * ...
+ */
+
 // This monkeypatch forces mongoose to require all paths by default.
 // However it does allow overriding with "pathName: {type: SomeType, required: false}""
 mongoose.Schema = (function monkeyPatch(original) {
@@ -19,3 +30,21 @@ mongoose.Schema = (function monkeyPatch(original) {
 	}
 })(mongoose.Schema);
 
+// This monkeypatch cancel the console log when a client sends a malformed request
+// this should not show up in the server logs because the server did not crash
+var temp = (function monkeyPatch(original) {
+	return function duckPunch() {
+		return function errorHandler(err, req, res, next) {
+			var consoleErr = console.error;
+			console.error = function noop() {};
+			var result = original.apply(this, arguments);
+			console.error = consoleErr;
+			return result;
+		}
+	};
+})(express.errorHandler());
+
+// express is doing something weird so we can't modify the errorHandler
+// bypass this by deleting the property first
+delete express.errorHandler;
+express.errorHandler = temp;

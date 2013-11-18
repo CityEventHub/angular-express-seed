@@ -1,13 +1,35 @@
 
-////////
-// RESTful CRUD functions.
-// wikipedia: http://en.wikipedia.org/wiki/Representational_state_transfer
-// http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
-////////
+/**
+ * RESTful CRUD (REpresentational State Transfer - Create Read Update Delete)
+ * wikipedia: http://en.wikipedia.org/wiki/Representational_state_transfer
+ * http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
+ *
+ * We use crud when we establish a route for the frontend to use.
+ * crud has 8 functions:
+ * getCollection, putCollection, postCollection, deleteCollection
+ * getDocument, putDocument, postDocument, deleteDocument
+ *
+ * each function can take 3 parameters: (Model [,finished [,passError]])
+ * We always need to pass in the Model that we are going to use. The models are defined in schemas.js.
+ *
+ * Finished is an optional parameter.  If you want the route to finish with the crud operation and
+ * return the result to the client, set finished to true. If you want addition middleware afterwards, omit it.
+ *
+ * passError is also an optional parameter.  Normally crud will directly return the error to the client
+ * then we can use angular to handle that error on the client side.  In case we would rather handle that
+ * error on the server side, we can set passError to true.  Instead of sending a response to the client,
+ * the error is saved on request.error, and then we call next()
+ * Two important things to remember:
+ *   passError takes presidence over finished.  passError must be the third argument, so finished should be
+ *     explcitly set to either true or false.  If there were no errors, crud follows the finished behavior.
+ *   The next callback function must be able to handle the error.  Especially if finished is false, the next
+ *     callback will need to examine the req.error and req.response to determine if the crud worked.
+ */
 
-////////
+
+////
 // Error checking helper functions
-////////
+////
 
 function modelErr() {
 	return function(req, res, next) {
@@ -18,40 +40,49 @@ function modelErr() {
 	}
 }
 
-function errorHandler(Model, res, action) {
+function errorHandler(Model, res, next, passError, action) {
 	return function error(status, details) {
 		if(status == 500) {
-			console.error("CRUD error when "+action);
+			console.error("CRUD server error when "+action);
 			console.error("  details: "+details);
 		}
-		return res && res.status(status).json({
+		var error = {
 			error: "Error " + action + " " + Model.modelName,
+			status: status,
 			details: details
-		});
+		};
+		if(passError) {
+			req.error = error;
+			if(next)
+				next();
+
+		} else {
+			return res && res.status(status).json();
+		}
 	}
 }
 
 
-////////
+////
 // Documents
-////////
+////
 
 // POST on document: Not generally used. Treat the document as a collection and create a new document in it.
 // Because this is an odd one, we'll leave it unimplemented.  Use postCollection instead.
-exports.postDocument = function(Model, goNext) {
+exports.postDocument = function(Model, finished, passError) {
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, "creating");
+		var error = errorHandler(Model, res, next, passError, "creating");
 		return error(501, "Posting on document not implemented");
 	}
 }
 
 // GET on document: Retrieve a document by id
-exports.getDocument = function(Model, goNext) {
+exports.getDocument = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, "getting");
+		var error = errorHandler(Model, res, next, passError, "getting");
 
 		if (!req)
 			return error(500, "No request found");
@@ -65,7 +96,7 @@ exports.getDocument = function(Model, goNext) {
 				return error(500, err);
 			if (!result)
 				return error(404, "No result returned");
-			if (!goNext)
+			if (finished)
 				return res.json(result);
 
 			req.resource = result;
@@ -76,12 +107,12 @@ exports.getDocument = function(Model, goNext) {
 }
 
 // PUT on document: Updates the document of the collection, or if it doesn't exist, create it.
-exports.putDocument = function(Model, goNext) {
+exports.putDocument = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, "updating");
+		var error = errorHandler(Model, res, next, passError, "updating");
 
 		if (!req)
 			return error(500, "No request found");
@@ -104,7 +135,7 @@ exports.putDocument = function(Model, goNext) {
 				return error(500, err);
 			if (!result)
 				return error(404, "No result returned");
-			if (!goNext)
+			if (finished)
 				return res.json(result);
 			
 			req.resource = result;
@@ -115,12 +146,12 @@ exports.putDocument = function(Model, goNext) {
 }
 
 // DELETE on document: Deletes the object from the collection.
-exports.deleteDocument = function(Model, goNext) {
+exports.deleteDocument = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, "deleting");
+		var error = errorHandler(Model, res, next, passError, "deleting");
 
 		if (!req)
 			return error(500, "No request found");
@@ -134,7 +165,7 @@ exports.deleteDocument = function(Model, goNext) {
 				return error(500, err);
 			if (!result)
 				return error(404, "No result returned");
-			if (!goNext)
+			if (finished)
 				return res.json(result);
 			
 			req.resource = result;
@@ -144,17 +175,17 @@ exports.deleteDocument = function(Model, goNext) {
 	}
 }
 
-////////
+////
 // Collections
-////////
+////
 
 // POST on collection: Create a new document in the collection.
-exports.postCollection = function(Model, goNext) {
+exports.postCollection = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, "creating");
+		var error = errorHandler(Model, res, next, passError, "creating");
 
 		if (!req)
 			return error(500, "No request found");
@@ -171,7 +202,7 @@ exports.postCollection = function(Model, goNext) {
 				return error(500, err);
 			if (!result)
 				return error(404, "No result returned");
-			if (!goNext)
+			if (finished)
 				return res.json(result);
 
 			req.resource = result;
@@ -183,7 +214,7 @@ exports.postCollection = function(Model, goNext) {
 }
 
 // GET on collection: Lists the documents in the entire collection.
-exports.getCollection = function(Model, goNext) {
+exports.getCollection = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 	
@@ -195,7 +226,7 @@ exports.getCollection = function(Model, goNext) {
 				return error(500, err);
 			if (!result)
 				return error(404, "No result returned");
-			if (!goNext)
+			if (finished)
 				return res.json(result);
 
 			req.resource = result;
@@ -207,7 +238,7 @@ exports.getCollection = function(Model, goNext) {
 
 // PUT on collection: Replaces the entire collection with another collection.
 // Warning: bypasses _id and __v checks, use with caution
-exports.putCollection = function(Model, goNext) {
+exports.putCollection = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
@@ -231,7 +262,7 @@ exports.putCollection = function(Model, goNext) {
 				for (var i = arguments.length - 1; i > 0; i--) {
 					result.push(arguments[i]);
 				}
-				if (!goNext)
+				if (finished)
 					return res.json(result);
 
 				req.resource = result;
@@ -243,12 +274,12 @@ exports.putCollection = function(Model, goNext) {
 }
 
 // DELETE on Collection: Deletes the entire collection.
-exports.deleteCollection = function(Model, goNext) {
+exports.deleteCollection = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, "deleting all");
+		var error = errorHandler(Model, res, next, passError, "deleting all");
 
 		// get the collection (to return)
 		exports.getCollection(Model, true)(req, res, function() {
@@ -257,7 +288,7 @@ exports.deleteCollection = function(Model, goNext) {
 			Model.remove(function(err) {
 				if (err)
 					return error(500, err);
-				if (!goNext)
+				if (finished)
 					return res.json(req.resource);
 
 				if (next)
