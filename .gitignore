@@ -1,2 +1,5 @@
 node_modules/
 .env
+angular.js
+angular-resource.js
+angular-route.js

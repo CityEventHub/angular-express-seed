@@ -74,7 +74,7 @@ function permissions(req, res, next) {
 	// return res && res.status(403).json({error: "Forbidden", details: "Forbidden"});
 
 	// otherwise continue with the action
-	next();
+	next && next();
 }
 
 function doMore(req, res, next) {
@@ -83,3 +83,33 @@ function doMore(req, res, next) {
 	// finish with:
 	res.json(req.resource);
 }
+
+////
+// Bad functions
+// Used for testing possible errors that the serve can encounter
+// NEVER use this when pushing to production
+////
+
+// adding a delay to see slow connections
+function delay(delay) {
+	return function delayRoute(req, res, next) {
+		if(next != null && delay != null)
+			setTimeout(next, delay);
+	}
+}
+
+// a function to emulate errors
+function error(status, err) {
+	// defaults
+	if(isNaN(status))
+		status = 500;
+	if(isNaN(err))
+		err = {error: "Internal Server Error", details: "Intentional Error"};
+
+	return function errorRoute(req, res, next) {
+		return res && res.status(status).json(err);
+	}
+}
+
+// a function to emulate infinite loops/never returning a response
+function nonResponse(req, res, next) {}

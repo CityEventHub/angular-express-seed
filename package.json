@@ -1,6 +1,7 @@
 {
 	"name": "city-event-hub",
-	"version": "0.0.2",
+	"version": "0.0.3",
+	"code-name": "frontendPrettyness",
 	"private": false,
 	"dependencies": {
 		"express": "3.4.2",

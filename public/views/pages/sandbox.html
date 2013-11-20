@@ -1,17 +1,35 @@
 <section class="partial-sandbox">
 	<form>
-		<label>
-			<div>Add a name:</div>
-			<input type="text" ng-model="newName.name" />
-			<button ng-click="addName(name)">Add</button>
-		</label>
-		<ul>
-			<li ng-repeat="name in names">
-				<input type="text" ng-model="name.name" />
-				<button ng-click="updateName(name)">Update</button>
-				<button ng-click="deleteName(name)">Delete</button>
-			</li>
-		</ul>
+		<header>
+			<p>Names now show that they are waiting before the server request finishes</p>
+			<p>To see the effect better, add delay(1000) to the backend api</p>
+		</header>
+
+		<img ng-if="names.initializing" src="/images/ajax-loader.gif" />
+		<div ng-if="names.error != null" class="error">
+			<p>Sorry! An error occured.</p>
+			<pre>Error: {{names.error.error}}</pre>
+			<pre>Details: {{names.error.details | json}}</pre>
+		</div>
+
+		<section ng-if="names.error == null &amp;&amp; !names.initializing">
+			<label>
+				<div>Add a name:</div>
+				<input type="text" ng-model="names.newName" ng-disable="!names.enabled" />
+				<button ng-click="addName(name)">Add</button>
+			</label>
+
+			<ul>
+				<li ng-repeat="name in names.savedNames">
+					<input type="text" ng-model="name.name" ng-class="names.decoration(name)" />
+					<button ng-click="updateName(name)" ng-disabled="!name.enabled || !names.enabled">Update</button>
+					<button ng-click="deleteName(name)" ng-disabled="!name.enabled || !names.enabled">Delete</button>
+				</li>
+			</ul>
+
+			<button ng-click="updateAll()" ng-disabled="!names.enabled">Update All</button>
+			<button ng-click="deleteAll()" ng-disabled="!names.enabled">Delete All</button>
+		</section>
 	</form>
 	<h1> This is Kevin doing a test</h1>
 </section>

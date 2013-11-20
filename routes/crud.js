@@ -40,11 +40,11 @@ function modelErr() {
 	}
 }
 
-function errorHandler(Model, res, next, passError, action) {
+function errorHandler(Model, req, res, next, passError, action) {
 	return function error(status, details) {
 		if(status == 500) {
-			console.error("CRUD server error when "+action);
-			console.error("  details: "+details);
+			console.error("----CRUD server error when "+action);
+			console.error("-----details: "+details);
 		}
 		var error = {
 			error: "Error " + action + " " + Model.modelName,
@@ -52,16 +52,28 @@ function errorHandler(Model, res, next, passError, action) {
 			details: details
 		};
 		if(passError) {
-			req.error = error;
-			if(next)
-				next();
+			req && (req.error = error);
+			next && next();
 
 		} else {
-			return res && res.status(status).json();
+			return res && res.status(status).json(error);
 		}
 	}
 }
 
+function prepareObj(obj, inc) {
+
+	// remove any of angular's funny business
+	for (var key in obj)
+		if(obj.hasOwnProperty(key) && key.charAt(0) == "$")
+			delete obj[key];
+	
+	// Remove the _id because "Mod on _id not allowed" and set the version number to increment by 1
+	delete obj._id;
+	delete obj.__v;
+	if(inc)
+		obj['$inc'] = { __v: 1 };
+}
 
 ////
 // Documents
@@ -71,7 +83,7 @@ function errorHandler(Model, res, next, passError, action) {
 // Because this is an odd one, we'll leave it unimplemented.  Use postCollection instead.
 exports.postDocument = function(Model, finished, passError) {
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, next, passError, "creating");
+		var error = errorHandler(Model, req, res, next, passError, "creating");
 		return error(501, "Posting on document not implemented");
 	}
 }
@@ -82,7 +94,7 @@ exports.getDocument = function(Model, finished, passError) {
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, next, passError, "getting");
+		var error = errorHandler(Model, req, res, next, passError, "getting");
 
 		if (!req)
 			return error(500, "No request found");
@@ -91,7 +103,7 @@ exports.getDocument = function(Model, finished, passError) {
 		if (!req.params._id)
 			return error(400, "Missing id from parameters");
 
-		Model.findById(req.params._id, function(err, result) {
+		return Model.findById(req.params._id, function(err, result) {
 			if (err)
 				return error(500, err);
 			if (!result)
@@ -100,8 +112,7 @@ exports.getDocument = function(Model, finished, passError) {
 				return res.json(result);
 
 			req.resource = result;
-			if (next)
-				next();
+			next && next();
 		});
 	}
 }
@@ -112,7 +123,7 @@ exports.putDocument = function(Model, finished, passError) {
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, next, passError, "updating");
+		var error = errorHandler(Model, req, res, next, passError, "updating");
 
 		if (!req)
 			return error(500, "No request found");
@@ -127,10 +138,8 @@ exports.putDocument = function(Model, finished, passError) {
 		if (req.params._id != req.body._id)
 			return error(400, "_id from parameters and body do not match ("+req.params._id+" != "+req.body._id+")");
 
-		// Remove the _id because we aren't going to modify that
-		delete req.body._id;
-
-		Model.findByIdAndUpdate(req.params._id, req.body, {upsert: true}, function(err, result) {
+		prepareObj(req.body, true);
+		return Model.findByIdAndUpdate(req.params._id, req.body, function(err, result) {
 			if (err)
 				return error(500, err);
 			if (!result)
@@ -139,8 +148,7 @@ exports.putDocument = function(Model, finished, passError) {
 				return res.json(result);
 			
 			req.resource = result;
-			if (next)
-				next();
+			next && next();
 		});
 	}
 }
@@ -151,7 +159,7 @@ exports.deleteDocument = function(Model, finished, passError) {
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, next, passError, "deleting");
+		var error = errorHandler(Model, req, res, next, passError, "deleting");
 
 		if (!req)
 			return error(500, "No request found");
@@ -160,7 +168,7 @@ exports.deleteDocument = function(Model, finished, passError) {
 		if (!req.params._id)
 			return error(400, "Missing id from parameters");
 		
-		Model.findByIdAndRemove(req.params._id, function(err, result) {
+		return Model.findByIdAndRemove(req.params._id, function(err, result) {
 			if (err)
 				return error(500, err);
 			if (!result)
@@ -169,8 +177,7 @@ exports.deleteDocument = function(Model, finished, passError) {
 				return res.json(result);
 			
 			req.resource = result;
-			if (next)
-				next();
+			next && next();
 		});
 	}
 }
@@ -185,7 +192,7 @@ exports.postCollection = function(Model, finished, passError) {
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, next, passError, "creating");
+		var error = errorHandler(Model, req, res, next, passError, "creating");
 
 		if (!req)
 			return error(500, "No request found");
@@ -196,8 +203,9 @@ exports.postCollection = function(Model, finished, passError) {
 		if (req.body.__v)
 			return error(400, "New document must not have __v (versioning number)");
 
+		prepareObj(req.body, false);
 		var doc = new Model(req.body);
-		doc.save(function(err, result) {
+		return doc.save(function(err, result) {
 			if (err)
 				return error(500, err);
 			if (!result)
@@ -206,8 +214,7 @@ exports.postCollection = function(Model, finished, passError) {
 				return res.json(result);
 
 			req.resource = result;
-			if (next)
-				next();
+			next && next();
 		});
 
 	}
@@ -219,9 +226,9 @@ exports.getCollection = function(Model, finished, passError) {
 		return modelErr();
 	
 	return function(req, res, next) {
-		var error = errorHandler(Model,res,"getting all");
+		var error = errorHandler(Model, req, res, next, passError, "getting all");
 
-		Model.find(function(err, result) {
+		return Model.find(function(err, result) {
 			if (err)
 				return error(500, err);
 			if (!result)
@@ -230,45 +237,120 @@ exports.getCollection = function(Model, finished, passError) {
 				return res.json(result);
 
 			req.resource = result;
-			if (next)
-				next();
+			next && next();
 		});
 	}
 }
 
 // PUT on collection: Replaces the entire collection with another collection.
-// Warning: bypasses _id and __v checks, use with caution
 exports.putCollection = function(Model, finished, passError) {
 	if (!Model || !Model.modelName)
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model,res,"replacing all");
+		var error = errorHandler(Model, req, res, next, passError, "replacing all");
 
 		if (!req)
 			return error(500, "No request found");
 		if (!req.body)
 			return error(400, "No request body found");
+		if(Object.prototype.toString.call(req.body) !== '[object Array]')
+			return error(400, "Request body must be an array");
 
-		// delete everything
-		exports.deleteCollection(Model, true)(req, res, function() {
-
-			// then replace it with the new collection
-			Model.create(req.body, function(err) {
-				if (err)
-					return error(500, err);
-				// result is comma seperated parameters, convert to array
-				result = [];
-				for (var i = arguments.length - 1; i > 0; i--) {
-					result.push(arguments[i]);
-				}
-				if (finished)
-					return res.json(result);
-
-				req.resource = result;
-				if (next)
-					next();
+		// First validate the input
+		for (var i = req.body.length - 1; i >= 0; i--) {
+			new Model(req.body[i]).validate(function valid(err) {
+				if(err)
+					return error(400, err);
 			});
+		};
+		
+		// because of weird async and _id behaviors we have to do this intelligently
+		// we need to remove any item that is in the db, but not in the request
+		// we need to update any item that is in the db, and is in the request
+		// we need to create any item that is not in the db, and is in the request
+		// we also need to pay special attention to _id's
+
+		// get the collection
+		return Model.find(function(err, results) {
+			// die if error
+			if (err)
+				return error(500, err);
+			if (!results)
+				return error(404, "No result returned");
+
+			// create temporary maps/arrays
+			var removeDocs = [];
+			var updateDocs = [];
+			var createDocs = [];
+			
+			// change the results to a map of {_id: {object including _id}}
+			// and push it into the remove array
+			var temp = {};
+			for (var i = results.length - 1; i >= 0; i--) {
+				temp[result[i]._id] = results[i];
+				removeDocs.push([result[i]._id]);
+			};
+			results = temp;
+
+			// seperate the request into the groups
+			for (var i = req.body.length - 1; i >= 0; i--) {
+				// get the id from each object
+				var id = req.body[i]._id;
+
+				// if the item doesn't have an id, create it
+				if(id == null) {
+					createDocs.push(req.body[i]);
+
+				// otherwise modify it
+				} else {
+					// if the object does not have a match, then it is new, but has it's own _id
+					// do not allow any PUT that does a custom _id
+					if(results[id] == null)
+						return error(400, "New document must not have _id");
+					
+					// push it to the update
+					updateDocs[id] = req.body[i];
+					// remove it from the remove map
+					if(~removeDocs.indexOf(id))
+						delete removeDocs[removeDocs.indexOf(id)];
+				}
+			};
+
+			// define failure rollback maps
+			var resetCreate = [];
+			var resetModify = [];
+			var resetRemove = [];
+
+			function success() {
+				req.resource =  req.body;
+				next && next();
+			}
+
+			// if the worst happens, attempt to fix
+			function rollback(err) {
+				console.log("Recovering!");
+				var createFn = createNextDoc(resetRemove, results, [], rollbackSuccessful, rollbackUnsuccessful);
+				var updateFn = updateNextDoc(updateDocs, results, [], createFn, rollbackUnsuccessful);
+				var removeFn = removeNextDoc(resetCreate, results, [], updateFn, rollbackUnsuccessful);
+				removeFn();
+			}
+
+			function rollbackSuccessful(err) {
+				console.log("Recovery Succeed!");
+				return error(500, err);
+			}
+
+			function rollbackUnsuccessful(err) {
+				console.log("Recovery Failed!");
+				return error(500, err);
+			}
+
+			var removeFn = removeNextDoc(removeDocs, results, resetRemove, success, rollback);
+			var updateFn = updateNextDoc(updateDocs, results, resetModify, removeFn, rollback);
+			var createFn = createNextDoc(createDocs, results, resetCreate, updateFn, rollback);
+			createFn();
+			
 		});
 	}
 }
@@ -279,21 +361,84 @@ exports.deleteCollection = function(Model, finished, passError) {
 		return modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, res, next, passError, "deleting all");
+		var error = errorHandler(Model, req, res, next, passError, "deleting all");
 
 		// get the collection (to return)
-		exports.getCollection(Model, true)(req, res, function() {
-		
-			// remove the collection (at this point the collection is saved to req.resource)
-			Model.remove(function(err) {
+		return Model.find(function(err, result) {
+			if (err)
+				return error(500, err);
+			if (!result)
+				return error(404, "No result returned");
+			req.resource = result;
+
+			// remove the collection
+			return Model.remove(function(err) {
 				if (err)
 					return error(500, err);
 				if (finished)
 					return res.json(req.resource);
 
-				if (next)
-					next();
+				next && next();
 			});
 		});
+
 	}
 }
+
+
+////
+// Recursive Methods with fallbacks
+
+// create each model one at a time
+function createNextDoc(collection, original, undo, callback, errorCb) {
+	return function() {
+		if (collection.length == 0)
+			return callback && callback();
+		var createDoc = collection.pop();
+
+		prepareObj(createDoc, false);
+		var doc = new Model(createDoc);
+		return doc.save(function(err, result) {
+			if (err)
+				return errorCb(err);
+			undo.push(result._id);
+			return createNextDoc(callback, errorCb);
+		});
+	};
+}
+
+// update each model one at a time
+function updateNextDoc(collection, original, undo, callback, errorCb) {
+	return function() {
+		if (collection.length == 0)
+			return callback && callback();
+		
+		var updateDoc = collection.pop();
+		var id = updateDoc._id;
+		
+		prepareObj(updateDoc, true);
+		return Model.findByIdAndUpdate(id, updateDoc, function(err, result) {
+			if (err)
+				return errorCb(err);
+			undo.push(original[id]);
+			return updateNextDoc(callback, errorCb);
+		});
+	};
+}
+
+// remove each model one at a time
+function removeNextDoc(collection, original, undo, callback, errorCb) {
+	return function() {
+		if (collection.length == 0)
+			return callback && callback();
+
+		var removeId = collection.pop();
+		return Model.remove({_id : removeId}, function(err) {
+			if (err)
+				return errorCb(err);
+			undo.push(original[removeId]);
+			return removeNextDoc(callback, errorCb);
+		});
+	};
+};
+
