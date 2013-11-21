@@ -7,7 +7,7 @@ Description here
 #### First setup the enviroment:
 
 sudo su  
-> echo "deb http://toolbelt.heroku.com/ubuntu ./" > /etc/apt/sources.list.d/heroku.list  
+> echo "deb https://toolbelt.heroku.com/ubuntu ./" > /etc/apt/sources.list.d/heroku.list  
 > wget -O- https://toolbelt.heroku.com/apt/release.key | apt-key add -  
 > add-apt-repository ppa:chris-lea/node.js  
 > apt-get update  
