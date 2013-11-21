@@ -5,4 +5,4 @@ angular.module('CityEventHub')
 .controller('CreateEventCtrl',['$scope','Names',function($scope,  Names) {
 
 
-});
+}]);

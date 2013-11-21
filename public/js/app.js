@@ -7,13 +7,16 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 ,function($routeProvider,  $locationProvider,  $provide) {
 
 	$routeProvider.when('/', {
-		templateUrl: '/views/pages/homepage.html'
+		templateUrl: '/views/pages/homepage.html',
+		tabName: "Homepage"
 	}).when('/sandbox', {
 		templateUrl: '/views/pages/sandbox.html',
-		controller: 'SandboxCtrl'
+		controller: 'SandboxCtrl',
+		tabName: "Sandbox"
 	}).when('/events',{
 		templateUrl:'/views/pages/events.html',
-		controller: 'EventsCtrl'
+		controller: 'EventsCtrl',
+		tabName: "Events"
 	}).when('/events/:search',{
 		templateUrl:'/views/pages/events.html',
 		controller: 'EventsCtrl'
@@ -22,12 +25,14 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 		controller: 'EventCtrl'
 	}).when('/event',{
 		templateUrl:'/views/pages/eventcreation.html',
-		controller: 'CreateEventCtrl'
+		controller: 'CreateEventCtrl',
+		tabName: "Event"
 	}).when('/profile/:id',{
 		templateUrl:'/views/pages/profile.html',
 		controller: 'ProfileCtrl'
 	}).otherwise( {
-		templateUrl: '/views/partials/404.html'
+		templateUrl: '/views/partials/404.html',
+		tabName: "404"
 	});
 	
 	$locationProvider.html5Mode(true);
