@@ -50,9 +50,9 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 			// monkey patch update to automagically change to isArray if passed an array
 			var arrayPatcher = function monkeyPatch(documentRequest, collectionRequest) {
 				return function wrappedCall(a1,a2,a3,a4) {
-					if(!angular.isObject(a1) && !angular.isObject(a2) || angular.isArray(a1) || angular.isArray(a2))
-						return collectionRequest(a1,a2,a3,a4);
-					return documentRequest(a1,a2,a3,a4);
+					if(angular.isArray(a1) || angular.isArray(a2))
+						return collectionRequest.apply(this,arguments);
+					return documentRequest.apply(this,arguments);
 				};
 			};
 			resource['update'] = arrayPatcher(resource['update'], resource['updateCollection']);
