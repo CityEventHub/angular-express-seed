@@ -280,7 +280,7 @@ exports.putCollection = function(Model, finished, passError) {
 				return error(404, "No result returned");
 
 			// create temporary maps/arrays
-			var removeDocs = [];
+			var removeDocs = {};
 			var updateDocs = [];
 			var createDocs = [];
 			
@@ -288,8 +288,8 @@ exports.putCollection = function(Model, finished, passError) {
 			// and push it into the remove array
 			var temp = {};
 			for (var i = results.length - 1; i >= 0; i--) {
-				temp[result[i]._id] = results[i];
-				removeDocs.push([result[i]._id]);
+				temp[results[i]._id] = results[i];
+				removeDocs[results[i]._id] = results[i];
 			};
 			results = temp;
 
@@ -310,10 +310,9 @@ exports.putCollection = function(Model, finished, passError) {
 						return error(400, "New document must not have _id");
 					
 					// push it to the update
-					updateDocs[id] = req.body[i];
+					updateDocs.push(req.body[i]);
 					// remove it from the remove map
-					if(~removeDocs.indexOf(id))
-						delete removeDocs[removeDocs.indexOf(id)];
+					delete removeDocs[id];
 				}
 			};
 
@@ -323,16 +322,15 @@ exports.putCollection = function(Model, finished, passError) {
 			var resetRemove = [];
 
 			function success() {
-				req.resource =  req.body;
-				next && next();
+				exports.getCollection(Model, finished, passError)(req, res, next);
 			}
 
 			// if the worst happens, attempt to fix
 			function rollback(err) {
 				console.log("Recovering!");
-				var createFn = createNextDoc(resetRemove, results, [], rollbackSuccessful, rollbackUnsuccessful);
-				var updateFn = updateNextDoc(updateDocs, results, [], createFn, rollbackUnsuccessful);
-				var removeFn = removeNextDoc(resetCreate, results, [], updateFn, rollbackUnsuccessful);
+				var createFn = createNextDoc(Model, resetRemove, results, [], rollbackSuccessful, rollbackUnsuccessful);
+				var updateFn = updateNextDoc(Model, updateDocs, results, [], createFn, rollbackUnsuccessful);
+				var removeFn = removeNextDoc(Model, resetCreate, results, [], updateFn, rollbackUnsuccessful);
 				removeFn();
 			}
 
@@ -346,11 +344,10 @@ exports.putCollection = function(Model, finished, passError) {
 				return error(500, err);
 			}
 
-			var removeFn = removeNextDoc(removeDocs, results, resetRemove, success, rollback);
-			var updateFn = updateNextDoc(updateDocs, results, resetModify, removeFn, rollback);
-			var createFn = createNextDoc(createDocs, results, resetCreate, updateFn, rollback);
+			var removeFn = removeNextDoc(Model, removeDocs, results, resetRemove, success, rollback);
+			var updateFn = updateNextDoc(Model, updateDocs, results, resetModify, removeFn, rollback);
+			var createFn = createNextDoc(Model, createDocs, results, resetCreate, updateFn, rollback);
 			createFn();
-			
 		});
 	}
 }
@@ -390,7 +387,7 @@ exports.deleteCollection = function(Model, finished, passError) {
 // Recursive Methods with fallbacks
 
 // create each model one at a time
-function createNextDoc(collection, original, undo, callback, errorCb) {
+function createNextDoc(Model, collection, original, undo, callback, errorCb) {
 	return function() {
 		if (collection.length == 0)
 			return callback && callback();
@@ -402,13 +399,13 @@ function createNextDoc(collection, original, undo, callback, errorCb) {
 			if (err)
 				return errorCb(err);
 			undo.push(result._id);
-			return createNextDoc(callback, errorCb);
+			return createNextDoc(Model, collection, original, undo, callback, errorCb)();
 		});
 	};
 }
 
 // update each model one at a time
-function updateNextDoc(collection, original, undo, callback, errorCb) {
+function updateNextDoc(Model, collection, original, undo, callback, errorCb) {
 	return function() {
 		if (collection.length == 0)
 			return callback && callback();
@@ -420,25 +417,45 @@ function updateNextDoc(collection, original, undo, callback, errorCb) {
 		return Model.findByIdAndUpdate(id, updateDoc, function(err, result) {
 			if (err)
 				return errorCb(err);
+
 			undo.push(original[id]);
-			return updateNextDoc(callback, errorCb);
+			return updateNextDoc(Model, collection, original, undo, callback, errorCb)();
 		});
 	};
 }
 
 // remove each model one at a time
-function removeNextDoc(collection, original, undo, callback, errorCb) {
+function removeNextDoc(Model, collection, original, undo, callback, errorCb) {
 	return function() {
-		if (collection.length == 0)
+		
+		var removeObj = popAssociativeArray(collection);
+
+		if (removeObj === null)
 			return callback && callback();
 
-		var removeId = collection.pop();
-		return Model.remove({_id : removeId}, function(err) {
+		var removeId = removeObj._id;
+		return Model.remove({_id : removeId}, function(err, numberRemoved) {
 			if (err)
 				return errorCb(err);
+			if (numberRemoved !== 1)
+				return errorCB({error:"Invalid Remove",details:"Number removed ("+numberRemoved+") != 0"});
+
 			undo.push(original[removeId]);
-			return removeNextDoc(callback, errorCb);
+			return removeNextDoc(Model, collection, original, undo, callback, errorCb)();
 		});
 	};
 };
+
+function popAssociativeArray(collection) {
+	if(Object.prototype.toString.call(collection) != "[object Object]")
+		return undefined;
+	for(var property in collection) {
+		if(collection.hasOwnProperty(property)) {
+			var temp = collection[property];
+			delete collection[property];
+			return temp;
+		}
+	}
+	return null;
+}
 
