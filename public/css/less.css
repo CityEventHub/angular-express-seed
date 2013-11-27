@@ -1,12 +1,1 @@
-*,*:before,*:after{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
-.creating{color:#099}
-.deleting{text-decoration:line-through}
-.updating{color:#9fee00}
-.error{background-color:#f00}
-.partial-404{width:100%}
-.partial-header{width:100%}.partial-header .nav-links{padding-left:0;list-style:none;border-bottom:.1em solid #000;margin-bottom:2em;padding:0 0 .5em}.partial-header .nav-links:before{content:"["}
-.partial-header .nav-links:after{content:"]"}
-.partial-header .nav-links>li{display:inline}.partial-header .nav-links>li:before{content:"|";padding-left:.15em;padding-right:.15em}
-.partial-header .nav-links>li:nth-child(1):before{content:"";padding-left:0}
-.page-sandbox{width:100%}
-.page-homepage{width:100%}
+*,*:before,*:after{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}.creating{color:#099}.deleting{text-decoration:line-through}.updating{color:#9fee00}.error{background-color:#f00}.partial-404{width:100%}.partial-header{width:100%}.partial-header .nav-links{padding-left:0;list-style:none;border-bottom:.1em solid #000;margin-bottom:2em;padding:0 0 .5em}.partial-header .nav-links:before{content:"["}.partial-header .nav-links:after{content:"]"}.partial-header .nav-links>li{display:inline}.partial-header .nav-links>li:before{content:"|";padding-left:.15em;padding-right:.15em}.partial-header .nav-links>li:nth-child(1):before{content:"";padding-left:0}.page-sandbox{width:100%}.page-homepage{width:100%}.page-profile{width:100%}.my-settings-panel{width:150px;margin-left:30;float:left}.my-events-panel{width:500px;margin:30;float:left}.my-upcoming-events-panel{width:500px;margin:30;float:left}.event-rank{float:right}.up-margin{margin-top:-10}.bottom-margin{margin-bottom:0}.event{margin-bottom:30;padding:10}.border-with-shadow{border:2px solid;border-radius:25px;box-shadow:10px 10px 5px #888}.center-text{text-align:center}.float-right{float:right}.page-events{width:100%}.tag-filter-panel{width:200px;margin-left:50;float:left}.events-panel{width:560px;margin:30;float:left}.map-panel{width:280px;margin:30;float:left}.search-box{width:200px;margin:0 auto}.up-margin{margin-top:-10}

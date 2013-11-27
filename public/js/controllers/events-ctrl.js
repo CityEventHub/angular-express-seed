@@ -6,6 +6,7 @@ angular.module('CityEventHub')
 
 
 	$scope.events = [{
+		"id":"1001",
 		"title":"Party!",
 		"location":"My place",
 		"time":"You know when",
@@ -13,6 +14,7 @@ angular.module('CityEventHub')
 		"rank":100
 	},
 	{
+		"id":"1002",
 		"title":"My Other Party!",
 		"location":"My secret spot",
 		"time":"six freckles past four hairs",
@@ -20,6 +22,7 @@ angular.module('CityEventHub')
 		"rank":1
 	},
 	{
+		"id":"1003",
 		"title":"cool yard sale",
 		"location":"123 s 456 e",
 		"time":"all day yo, Saturday",
@@ -27,6 +30,7 @@ angular.module('CityEventHub')
 		"rank":35
 	},
 	{
+		"id":"1004",
 		"title":"pizza party",
 		"location":"pizza hut",
 		"time":"6:30, on the dot",
@@ -34,6 +38,7 @@ angular.module('CityEventHub')
 		"rank":6
 	},
 	{
+		"id":"1005",
 		"title":"Parade on 9th",
 		"location":"9th ave",
 		"time":"6:00am-10:00am",
@@ -57,6 +62,10 @@ angular.module('CityEventHub')
 		"name": "Community",
 		"isChecked": false
 	}];
+
+	$scope.sendToEventPage = function(event){
+		window.location.href = 'event/' + event.id;
+	};
 
 
 }]);
