@@ -1,1 +1,33 @@
-//this is the events html page
+<div class="page-profile">
+	<h1 class="center-text">Search For Events</h1>
+		<div class="search-box">
+			<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23">
+		</div>
+	<div class="tag-filter-panel">
+		<h3>Tag Filter</h3>
+		<div ng-repeat="tag in tags">
+			<input type="checkbox" ng-model="tag.isChecked"> {{tag.name}} <br><br>
+		</div>
+	</div>
+	<div class="events-panel">
+		<div class="event border-with-shadow" ng-repeat="event in events">
+			<div>
+				<span class="event-rank">Rank: {{event.rank}}</span>
+				<b>{{event.title}}</b><br>
+				Location: {{event.location}}<br>
+				Time: {{event.time}}<br>
+				Description: {{event.description}}
+			</div>
+			<div class="float-right">
+				<button ng-click="">T</button>
+				<button ng-click="">F</button>
+				<button ng-click="">#</button>
+			</div>
+			<br>
+		</div>
+	</div>
+	<div class="map-panel">
+		One day a real google map might be here
+		<img src="/images/googleMap.png">
+	</div>
+</div>

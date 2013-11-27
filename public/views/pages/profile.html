@@ -1,1 +1,47 @@
-//This is the profile page
+<div class="page-profile">
+	<h1 class="center-text">My Profile</h1>
+	<div class="my-settings-panel up-margin">
+		<br><br><br>
+		<h3>My Settings</h3>
+		<input type="checkbox" ng-model="settings.displayInfo"> Display my info in events <br><br>
+		<input type="checkbox" ng-model="settings.showRsvpNums"> Show RSVP numbers in events <br><br>
+		<input type="checkbox" ng-model="settings.emailMe"> Email me <br><br>
+	</div>
+	<div class="my-events-panel up-margin">
+		<h2 class="center-text bottom-margin"><u>My Events (I created)</u></h2><br>
+		<div class="event border-with-shadow" ng-repeat="event in myEvents">
+			<div>
+				<span class="event-rank">Rank: {{event.rank}}</span>
+				<b>{{event.title}}</b><br>
+				Location: {{event.location}}<br>
+				Time: {{event.time}}<br>
+				Description: {{event.description}}
+			</div>
+			<div class="float-right">
+				<button ng-click="">T</button>
+				<button ng-click="">F</button>
+				<button ng-click="">#</button>
+			</div>
+			<br>
+		</div>
+	</div>
+	<div class="my-upcoming-events-panel up-margin">
+		<h2 class="center-text bottom-margin"><u>Upcoming Events (I am going to)</u></h2><br>
+		<div class="event border-with-shadow" ng-repeat="event in myUpcomingEvents">
+			<div>
+				<span class="event-rank">Rank: {{event.rank}}</span>
+				<b>{{event.title}}</b><br>
+				Location: {{event.location}}<br>
+				Time: {{event.time}}<br>
+				Description: {{event.description}}
+			</div>
+			<div class="float-right">
+				<button ng-click="">T</button>
+				<button ng-click="">F</button>
+				<button ng-click="">#</button>
+			</div>
+			<br>
+		</div>
+	</div>
+	<br><br>
+</div>

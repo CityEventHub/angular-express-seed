@@ -1,0 +1,52 @@
+.page-profile {
+	width: 100%;
+}
+
+.my-settings-panel {
+	width: 150px;
+	margin-left: 30;
+	float: left;
+}
+
+.my-events-panel {
+	width: 500px;
+	margin: 30;
+	float: left;
+}
+
+.my-upcoming-events-panel {
+	width: 500px;
+	margin: 30;
+	float: left;
+}
+
+.event-rank{
+	float: right;
+}
+
+.up-margin{
+	margin-top: -10;
+}
+
+.bottom-margin{
+	margin-bottom: 0;
+}
+
+.event{
+	margin-bottom: 30;
+	padding:10;
+}
+
+.border-with-shadow{
+	border:2px solid;
+	border-radius:25px;
+	box-shadow: 10px 10px 5px #888888;
+}
+
+.center-text{
+	text-align: center;
+}
+
+.float-right{
+	float: right;
+}
