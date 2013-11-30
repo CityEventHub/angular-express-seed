@@ -3,9 +3,9 @@
 	<div class="my-settings-panel up-margin">
 		<br><br><br>
 		<h3>My Settings</h3>
-		<input type="checkbox" ng-model="settings.displayInfo"> Display my info in events <br><br>
-		<input type="checkbox" ng-model="settings.showRsvpNums"> Show RSVP numbers in events <br><br>
-		<input type="checkbox" ng-model="settings.emailMe"> Email me <br><br>
+		<label><input type="checkbox" ng-model="settings.displayInfo"> Display my info in events </label><br><br>
+		<label><input type="checkbox" ng-model="settings.showRsvpNums"> Show RSVP numbers in events </label><br><br>
+		<label><input type="checkbox" ng-model="settings.emailMe"> Email me </label><br><br>
 	</div>
 	<div class="my-events-panel up-margin">
 		<h2 class="center-text bottom-margin"><u>My Events (I created)</u></h2><br>
@@ -17,11 +17,11 @@
 				Time: {{event.time}}<br>
 				Description: {{event.description}}
 			</div>
-			<div class="float-right">
+			<!-- <div class="float-right">
 				<button ng-click="">T</button>
 				<button ng-click="">F</button>
 				<button ng-click="">#</button>
-			</div>
+			</div> -->
 			<button ng-click="sendToEventPage(event)">See More Details</button>
 			<br>
 		</div>
@@ -36,11 +36,11 @@
 				Time: {{event.time}}<br>
 				Description: {{event.description}}
 			</div>
-			<div class="float-right">
+			<!-- <div class="float-right">
 				<button ng-click="">T</button>
 				<button ng-click="">F</button>
 				<button ng-click="">#</button>
-			</div>
+			</div> -->
 			<button ng-click="sendToEventPage(event)">See More Details</button>
 			<br>
 		</div>

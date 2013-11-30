@@ -6,7 +6,7 @@
 	<div class="tag-filter-panel">
 		<h3>Tag Filter</h3>
 		<div ng-repeat="tag in tags">
-			<input type="checkbox" ng-model="tag.isChecked"> {{tag.name}} <br><br>
+			<label><input type="checkbox" ng-model="tag.isChecked"> {{tag.name}} </label><br><br>
 		</div>
 	</div>
 	<div class="events-panel">
@@ -18,11 +18,11 @@
 				Time: {{event.time}}<br>
 				Description: {{event.description}}
 			</div>
-			<div class="float-right">
+			<!-- <div class="float-right">
 				<button ng-click="">T</button>
 				<button ng-click="">F</button>
 				<button ng-click="">#</button>
-			</div>
+			</div> -->
 			<button ng-click="sendToEventPage(event)">See More Details</button>
 			<br>
 		</div>
