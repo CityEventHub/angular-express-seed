@@ -1,3 +1,38 @@
-<section class="partial-homepage">
-	This is the homepage!
+<section class="page-homepage">
+	<div class="top-banner">
+		<div class = "main-message">
+			<h1>Looking for something</h1>
+			<h1 class = "indent">to do?</h1>
+			<h1>Find events</h1>
+			<h1 class = "indent">near YOU!</h1>
+			<div class="search-box">
+				<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23">
+			</div>
+		</div>
+		<div class="image-event">
+			<div>
+				<img src="images/events.gif"/>
+			</div>
+		</div>
+	</div>
+	<div class = "hosting-event">
+		<div class="host-message">
+			<h1>Hosting</h1>
+			<h1 class = "indent">an</h1>
+			<h1 class = "indent">event</h1>
+		</div>
+		<form class="sign-up">
+			<h1>Sign Up</h1>
+			<input type="text" ng-model="email" required placeholder="Email" size="23">
+			<input type="text" ng-model="username" required placeholder="Username" size="23">
+			<input type="password" ng-model="password" required placeholder="Password" size="23">
+			<button type="submit">Sign Up</button>
+		</form>
+		<form class="sign-in">
+			<h1>Sign In</h1>
+			<input type="text" ng-model="username" required placeholder="Username or Email" size="23">
+			<input type="password" ng-model="password" required placeholder="Password" size="23">
+			<button type="submit">Sign In</button>
+		</form>
+	</div>
 </section>

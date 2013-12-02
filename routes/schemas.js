@@ -23,8 +23,8 @@ Event = mongoose.model('Event', EventSchema);
 ProfileSchema = mongoose.Schema({
   name: String,
   email: String,
-  myEvents: [event],
-  upcomingEvents: [event],
+  myEvents: [Event],
+  upcomingEvents: [Event],
   settingDisplayInfo: Boolean,
   settingShowRsvp: Boolean,
   settingEmailMe: Boolean,
