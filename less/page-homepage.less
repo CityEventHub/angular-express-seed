@@ -5,7 +5,8 @@
 	min-width: 950px;
 	margin-left:auto;
 	margin-right:auto;
-	color: #13296B !important;
+	color: #335F74 !important;
+
 	.top-banner {
 		margin-left:auto;
 		margin-right:auto;
@@ -20,11 +21,14 @@
 		}
 
 		.image-event{
-			float:right;
-
+			
+			margin-right:20px;
+			div {
+				display:inline-block;
+			}
 			img{
-				width:100px;
-				height:100px;
+				width:200px;
+				height:200px;
 			}
 		}
 
@@ -33,55 +37,61 @@
 	
 	.hosting-event{
 		width:100%;
-		min-width:600px;
-		max-width: 600px;
+		min-width:700px;
+		max-width: 700px;
 		margin-left: auto;
 		margin-right: auto;
 
-		background-color: #F97B27;
-		min-height:225px;
-		border:1px solid #13296B;
+		min-height:250px;
+		max-height:250px;
+		border:10px solid #78C0E2;
 		border-radius: 5px;
 
-		.host-message {
-			float:left;
-			margin-left:10px;
-			margin-top: 10px;
-		}
-
-		.sign-up{
-			float:left;
-			margin-left:10px;
-			margin-top: 10px;
-
-			input {
-				display:block;
+		.hosting-wrapper{
+			max-width:600px;
+			min-width:600px;
+			margin:0 auto;
+			min-height:inherit;
+			max-height:inherit;
+			.host-message {
+				float:left;
 				margin-top:10px;
 			}
 
-			button {
-				margin-top:10px;
-				margin-left: 33%;
-				margin-right:auto;
-				max-width:80px;
+			.sign-up{
+				min-width:300px;
+				max-width:300px;
+				min-height: inherit;
+				max-height: inherit;
+				margin:0 auto;
+				padding-top:10px;
+				input {
+					display:block;
+					margin-top:10px;
+				}
+
+				button {
+					margin-top:10px;
+					margin-left: 33%;
+					margin-right:auto;
+					max-width:80px;
+				}
 			}
-		}
 
-		.sign-in {
-			float:left;
-			margin-left:10px;
-			margin-top: 10px;
-
-			input {
-				display:block;
+			.sign-in {
+				float:right;
 				margin-top:10px;
-			}
+				input {
+					display:block;
+					margin-top:10px;
+				}
 
-			button {
-				margin-top:10px;
-				margin-left: 33%;
-				margin-right:auto;
-				max-width:80px;
+				button {
+					margin-top:10px;
+					margin-left: 33%;
+					margin-right:auto;
+					max-width:80px;
+				}
 			}
 		}
 	}
