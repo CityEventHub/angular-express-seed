@@ -9,27 +9,39 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 	$routeProvider.when('/', {
 		templateUrl: '/views/pages/homepage.html',
 		tabName: "Homepage"
+
+	}).when('/sandbox-plain', {
+		templateUrl: '/views/pages/sandbox-plain.html',
+		controller: 'SandboxPlainCtrl',
+		tabName: "Sandbox Plain"
+
 	}).when('/sandbox', {
 		templateUrl: '/views/pages/sandbox.html',
 		controller: 'SandboxCtrl',
-		tabName: "Sandbox"
+		tabName: "Sandbox Pretty"
+	
 	}).when('/events',{
 		templateUrl:'/views/pages/events.html',
 		controller: 'EventsCtrl',
 		tabName: "Events"
+
 	}).when('/events/:search',{
 		templateUrl:'/views/pages/events.html',
 		controller: 'EventsCtrl'
+
 	}).when('/event/:id',{
 		templateUrl:'/views/pages/event.html',
 		controller: 'EventCtrl'
+
 	}).when('/event',{
 		templateUrl:'/views/pages/eventcreation.html',
 		controller: 'CreateEventCtrl',
 		tabName: "Event"
+
 	}).when('/profile/:id',{
 		templateUrl:'/views/pages/profile.html',
 		controller: 'ProfileCtrl'
+		
 	}).otherwise( {
 		templateUrl: '/views/partials/404.html',
 		tabName: "404"

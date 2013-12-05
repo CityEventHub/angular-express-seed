@@ -1,4 +1,4 @@
-<section class="partial-sandbox">
+<section class="page-sandbox">
 	<form>
 		<header>
 			<p>Names now show that they are waiting before the server request finishes</p>
@@ -16,7 +16,7 @@
 			<label>
 				<div>Add a name:</div>
 				<input type="text" ng-model="names.newName" ng-disable="!names.enabled" />
-				<button ng-click="addName(name)">Add</button>
+				<button ng-click="addName()">Add</button>
 			</label>
 
 			<ul>
@@ -31,5 +31,4 @@
 			<button ng-click="deleteAll()" ng-disabled="!names.enabled">Delete All</button>
 		</section>
 	</form>
-	<h1> This is Kevin doing a test</h1>
 </section>

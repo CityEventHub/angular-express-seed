@@ -1,0 +1,29 @@
+<section class="page-sandbox">
+	<form>
+		<header>
+			<p>
+				Same as the sandbox pretty, but without css and without some checks
+				that ensure the front end is synced with the back.  This is so that the controller doesn't have as much fluff, and serves as a better example.
+			</p>
+		</header>
+
+		<section>
+			<label>
+				<div>Add a name:</div>
+				<input type="text" ng-model="names.newName" />
+				<button ng-click="addName()">Add</button>
+			</label>
+
+			<ul>
+				<li ng-repeat="name in names.savedNames">
+					<input type="text" ng-model="name.name" />
+					<button ng-click="updateName(name)">Update</button>
+					<button ng-click="deleteName(name)">Delete</button>
+				</li>
+			</ul>
+
+			<button ng-click="updateAll()">Update All</button>
+			<button ng-click="deleteAll()">Delete All</button>
+		</section>
+	</form>
+</section>
