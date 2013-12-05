@@ -9,13 +9,12 @@
 	</div>
 	<div class="my-events-panel up-margin">
 		<h2 class="center-text bottom-margin"><u>My Events (I created)</u></h2><br>
-		<div class="event border-with-shadow" ng-repeat="event in myEvents">
+		<div class="my-profile-event border-with-shadow" ng-repeat="event in myEvents">
 			<div>
-				<span class="event-rank">Rank: {{event.rank}}</span>
-				<b>{{event.title}}</b><br>
-				Location: {{event.location}}<br>
-				Time: {{event.time}}<br>
-				Description: {{event.description}}
+				<span ng-click="sendToEventPage(event)" class="clickable"><b>{{event.title}}</b></span><br>
+				<i>Location:</i> {{event.location}}<br>
+				<i>Time:</i> {{event.time}}<br>
+				<i>Description:</i> {{event.description}}
 			</div>
 			<!-- <div class="float-right">
 				<button ng-click="">T</button>
@@ -27,14 +26,14 @@
 		</div>
 	</div>
 	<div class="my-upcoming-events-panel up-margin">
-		<h2 class="center-text bottom-margin"><u>Upcoming Events (I am going to)</u></h2><br>
-		<div class="event border-with-shadow" ng-repeat="event in myUpcomingEvents">
+		<h2 class="center-text bottom-margin"><u>Upcoming Events</u></h2><br>
+		<div class="my-profile-event border-with-shadow" ng-repeat="event in myUpcomingEvents">
 			<div>
 				<span class="event-rank">Rank: {{event.rank}}</span>
-				<b>{{event.title}}</b><br>
-				Location: {{event.location}}<br>
-				Time: {{event.time}}<br>
-				Description: {{event.description}}
+				<span ng-click="sendToEventPage(event)" class="clickable"><b>{{event.title}}</b></span><br>
+				<i>Location:</i> {{event.location}}<br>
+				<i>Time:</i> {{event.time}}<br>
+				<i>Description:</i> {{event.description}}
 			</div>
 			<!-- <div class="float-right">
 				<button ng-click="">T</button>

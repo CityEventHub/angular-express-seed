@@ -2,7 +2,12 @@
 
 //this is the controller that handles profiles, it will contain a :id routeparam to get the profile
 angular.module('CityEventHub')
-.controller('ProfileCtrl',['$scope','Names',function($scope,  Names) {
+.controller('ProfileCtrl',['$scope','Names','Events',function($scope,  Names, Events) {
+
+	// $scope.myEvents2 = Events.Query();
+	// $scope.myUpcomingEvents2 = Events.Query();
+	// console.log($scope.myEvents2);
+
 
 	$scope.myEvents = [{
 		"id":"1001",

@@ -1,4 +1,4 @@
-<div class="page-profile">
+<div class="page-events">
 	<h1 class="center-text">Search For Events</h1>
 		<div class="search-box">
 			<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23">
@@ -10,13 +10,13 @@
 		</div>
 	</div>
 	<div class="events-panel">
-		<div class="event border-with-shadow" ng-repeat="event in events">
+		<div class="searching-for-event border-with-shadow" ng-repeat="event in events">
 			<div>
 				<span class="event-rank">Rank: {{event.rank}}</span>
-				<b>{{event.title}}</b><br>
-				Location: {{event.location}}<br>
-				Time: {{event.time}}<br>
-				Description: {{event.description}}
+				<span ng-click="sendToEventPage(event)" class="clickable"><b>{{event.title}}</b></span><br>
+				<i>Location:</i> {{event.location}}<br>
+				<i>Time:</i> {{event.time}}<br>
+				<i>Description:</i> {{event.description}}
 			</div>
 			<!-- <div class="float-right">
 				<button ng-click="">T</button>
@@ -29,6 +29,6 @@
 	</div>
 	<div class="map-panel">
 		One day a real google map might be here :)
-		<img src="/images/googleMap.png">
+		<img src="/images/googleMap.png" class="map-image">
 	</div>
 </div>
