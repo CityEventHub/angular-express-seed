@@ -25,7 +25,7 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 		controller: 'EventCtrl',
 		tabName: "New Event"
 
-	}).when('/events/:search',{
+	}).when('/events/:search?',{
 		templateUrl:'/views/pages/events.html',
 		controller: 'EventsCtrl',
 		tabName: "Events"
