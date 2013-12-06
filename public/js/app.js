@@ -8,6 +8,7 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 
 	$routeProvider.when('/', {
 		templateUrl: '/views/pages/homepage.html',
+		controller: 'HomeCtrl',
 		tabName: "Homepage"
 
 	}).when('/sandbox-plain', {

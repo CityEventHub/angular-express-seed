@@ -6,7 +6,9 @@
 			<h1>Find events</h1>
 			<h1 class = "indent">near YOU!</h1>
 			<div class="search-box">
-				<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23">
+				<form ng-submit="goToEvents()">
+					<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23" >
+				</form> 
 			</div>
 		</div>
 		<div class="image-event">
@@ -24,12 +26,6 @@
 				<h1 class = "indent">an</h1>
 				<h1 class = "indent">event</h1>
 			</div>
-			<form class="sign-in">
-				<h1>Sign In</h1>
-				<input type="text" ng-model="username" required placeholder="Username or Email" size="23">
-				<input type="password" ng-model="password" required placeholder="Password" size="23">
-				<button class="btn btn-primary sign-up-button" type="submit">Sign In</button>
-			</form>
 			<form class="sign-up">
 				<h1>Sign Up</h1>
 				<input type="text" ng-model="email" required placeholder="Email" size="23">
