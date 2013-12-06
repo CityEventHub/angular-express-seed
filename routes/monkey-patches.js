@@ -13,7 +13,7 @@
 // This monkeypatch forces mongoose to require all paths by default.
 // However it does allow overriding with "pathName: {type: SomeType, required: false}""
 mongoose.Schema = (function monkeyPatch(original) {
-	return function Schema(obj,options) {
+	var schema = function Schema(obj,options) {
 		for(var path in obj) {
 			if(obj.hasOwnProperty(path)) {
 				if(typeof obj[path] != 'object') {
@@ -27,20 +27,25 @@ mongoose.Schema = (function monkeyPatch(original) {
 			}
 		}
 		return original.apply(this, arguments);
-	}
+	};
+
+	schema.prototype = schema.__proto__ = original;
+	return schema;
 })(mongoose.Schema);
 
 // This monkeypatch cancel the console log when a client sends a malformed request
 // this should not show up in the server logs because the server did not crash
 var temp = (function monkeyPatch(original) {
 	return function duckPunch() {
-		return function errorHandler(err, req, res, next) {
+		var errorHandler = function errorHandler(err, req, res, next) {
 			var consoleErr = console.error;
 			console.error = function noop() {};
 			var result = original.apply(this, arguments);
 			console.error = consoleErr;
 			return result;
 		}
+		errorHandler.prototype = errorHandler.__proto__ = original;
+		return errorHandler;
 	};
 })(express.errorHandler());
 

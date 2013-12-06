@@ -5,7 +5,6 @@ NamesSchema = mongoose.Schema({
 
 Name = mongoose.model('Name', NamesSchema);
 
-
 EventSchema = mongoose.Schema({ 
   title: String,
   location: String,
@@ -14,7 +13,7 @@ EventSchema = mongoose.Schema({
   description: String,
   rank: Number,
   rsvp: Number,
-  creator: String 
+  creator: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile'} 
 });
 
 Event = mongoose.model('Event', EventSchema);
@@ -23,12 +22,12 @@ Event = mongoose.model('Event', EventSchema);
 ProfileSchema = mongoose.Schema({
   name: String,
   email: String,
-  myEvents: [Event],
-  upcomingEvents: [Event],
+  myEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
+  upcomingEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
   settingDisplayInfo: Boolean,
   settingShowRsvp: Boolean,
   settingEmailMe: Boolean,
-  blacklisted: Boolean,
+  blacklisted: Boolean
 });
 
 Profile = mongoose.model('Profile', ProfileSchema);

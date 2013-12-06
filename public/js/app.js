@@ -19,29 +19,22 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 		templateUrl: '/views/pages/sandbox.html',
 		controller: 'SandboxCtrl',
 		tabName: "Sandbox Pretty"
-	
-	}).when('/events',{
+
+	}).when('/event/:eventid?',{
+		templateUrl:'/views/pages/event.html',
+		controller: 'EventCtrl',
+		tabName: "New Event"
+
+	}).when('/events/:search',{
 		templateUrl:'/views/pages/events.html',
 		controller: 'EventsCtrl',
 		tabName: "Events"
 
-	}).when('/events/:search',{
-		templateUrl:'/views/pages/events.html',
-		controller: 'EventsCtrl'
-
-	}).when('/event/:id',{
-		templateUrl:'/views/pages/event.html',
-		controller: 'EventCtrl'
-
-	}).when('/event',{
-		templateUrl:'/views/pages/eventcreation.html',
-		controller: 'CreateEventCtrl',
-		tabName: "Event"
-
-	}).when('/profile/:id',{
+	}).when('/profile/:profileid',{
 		templateUrl:'/views/pages/profile.html',
-		controller: 'ProfileCtrl'
-		
+		controller: 'ProfileCtrl',
+		tabName: "Profile"
+
 	}).otherwise( {
 		templateUrl: '/views/partials/404.html',
 		tabName: "404"

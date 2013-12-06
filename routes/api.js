@@ -52,17 +52,37 @@ var crud = require('./crud.js');
 
 // Load the routes. we may want to break this up into subfunctions later.
 exports.load = function(app) {
+
+	// Name Collections:
 	app.get('/api/names', crud.getCollection(Name, true));
-	// these are rare. Normally we don't use put, post, or delete on a collection.
-	app.put('/api/names', permissions, crud.putCollection(Name), doMore);
 	app.post('/api/names', permissions, crud.postCollection(Name), doMore);
+	// these are rare. Normally we don't use put or delete on a collection.
+	app.put('/api/names', permissions, crud.putCollection(Name), doMore);
 	app.delete('/api/names', permissions, crud.deleteCollection(Name), doMore);
 
+	// Name Documents:
 	app.get('/api/names/:_id', crud.getDocument(Name), doMore);
 	app.put('/api/names/:_id', permissions, crud.putDocument(Name), doMore);
 	app.delete('/api/names/:_id', permissions, crud.deleteDocument(Name), doMore);
 
+	// Events:
+	app.get('/api/events', crud.getCollection(Event, true));
+	app.post('/api/events', permissions, crud.postCollection(Event, true));
+
+	app.get('/api/events/:_id', crud.getDocument(Event, true));
+	app.put('/api/events/:_id', permissions, crud.putDocument(Event, true));
+	app.delete('/api/events/:_id', permissions, crud.deleteDocument(Event, true));
+
 };
+
+function enforceCreator(req, res, next) {
+	if (req && req.body) {
+		// we'll need to set this to the user. Perhaps discover the user in permissions?
+		req.body.creator = "529d09bb554a5a3369000002";
+	}
+
+	next && next();
+}
 
 function permissions(req, res, next) {
 	// do some sort of authentication checking here
@@ -83,6 +103,7 @@ function doMore(req, res, next) {
 	// finish with:
 	res.json(req.resource);
 }
+
 
 ////
 // Bad functions

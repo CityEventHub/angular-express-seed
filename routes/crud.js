@@ -75,6 +75,20 @@ function prepareObj(obj, inc) {
 		obj['$inc'] = { __v: 1 };
 }
 
+function validateCollection(Model, collection, cb, index) {
+	if(index == null)
+		index = collection.length-1;
+	
+	var doc = new Model(collection[index]);
+	doc.validate(function checkValid(err) {
+		if(err)
+			return cb(err);
+		if(index == 0)
+			return cb();
+		validateCollection(Model, collection, cb, index-1);
+	});
+}
+
 ////
 // Documents
 ////
@@ -139,16 +153,23 @@ exports.putDocument = function(Model, finished, passError) {
 			return error(400, "_id from parameters and body do not match ("+req.params._id+" != "+req.body._id+")");
 
 		prepareObj(req.body, true);
-		return Model.findByIdAndUpdate(req.params._id, req.body, function(err, result) {
-			if (err)
-				return error(500, err);
-			if (!result)
-				return error(404, "No result returned");
-			if (finished)
-				return res.json(result);
-			
-			req.resource = result;
-			next && next();
+		var doc = new Model(req.body);
+
+		doc.validate(function valid(err) {
+			if(err)
+				return error(400, err);
+
+			return Model.findByIdAndUpdate(req.params._id, req.body, function(err, result) {
+				if (err)
+					return error(500, err);
+				if (!result)
+					return error(404, "No result returned");
+				if (finished)
+					return res.json(result);
+				
+				req.resource = result;
+				next && next();
+			});
 		});
 	}
 }
@@ -205,18 +226,23 @@ exports.postCollection = function(Model, finished, passError) {
 
 		prepareObj(req.body, false);
 		var doc = new Model(req.body);
-		return doc.save(function(err, result) {
-			if (err)
-				return error(500, err);
-			if (!result)
-				return error(404, "No result returned");
-			if (finished)
-				return res.json(result);
 
-			req.resource = result;
-			next && next();
+		doc.validate(function valid(err) {
+			if(err)
+				return error(400, err);
+
+			doc.save(function(err, result) {
+				if (err)
+					return error(500, err);
+				if (!result)
+					return error(404, "No result returned");
+				if (finished)
+					return res.json(result);
+
+				req.resource = result;
+				next && next();
+			});
 		});
-
 	}
 }
 
@@ -257,98 +283,97 @@ exports.putCollection = function(Model, finished, passError) {
 		if(Object.prototype.toString.call(req.body) !== '[object Array]')
 			return error(400, "Request body must be an array");
 
-		// First validate the input
-		for (var i = req.body.length - 1; i >= 0; i--) {
-			new Model(req.body[i]).validate(function valid(err) {
-				if(err)
-					return error(400, err);
-			});
-		};
-		
-		// because of weird async and _id behaviors we have to do this intelligently
-		// we need to remove any item that is in the db, but not in the request
-		// we need to update any item that is in the db, and is in the request
-		// we need to create any item that is not in the db, and is in the request
-		// we also need to pay special attention to _id's
 
-		// get the collection
-		return Model.find(function(err, results) {
-			// die if error
-			if (err)
-				return error(500, err);
-			if (!results)
-				return error(404, "No result returned");
+		validateCollection(Model, req.body, function valid(err) {
 
-			// create temporary maps/arrays
-			var removeDocs = {};
-			var updateDocs = [];
-			var createDocs = [];
-			
-			// change the results to a map of {_id: {object including _id}}
-			// and push it into the remove array
-			var temp = {};
-			for (var i = results.length - 1; i >= 0; i--) {
-				temp[results[i]._id] = results[i];
-				removeDocs[results[i]._id] = results[i];
-			};
-			results = temp;
+			if(err)
+				return error(400, err);
 
-			// seperate the request into the groups
-			for (var i = req.body.length - 1; i >= 0; i--) {
-				// get the id from each object
-				var id = req.body[i]._id;
+			// because of weird async and _id behaviors we have to do this intelligently
+			// we need to remove any item that is in the db, but not in the request
+			// we need to update any item that is in the db, and is in the request
+			// we need to create any item that is not in the db, and is in the request
+			// we also need to pay special attention to _id's
 
-				// if the item doesn't have an id, create it
-				if(id == null) {
-					createDocs.push(req.body[i]);
+			// get the collection
+			return Model.find(function(err, results) {
+				// die if error
+				if (err)
+					return error(500, err);
+				if (!results)
+					return error(404, "No result returned");
 
-				// otherwise modify it
-				} else {
-					// if the object does not have a match, then it is new, but has it's own _id
-					// do not allow any PUT that does a custom _id
-					if(results[id] == null)
-						return error(400, "New document must not have _id");
-					
-					// push it to the update
-					updateDocs.push(req.body[i]);
-					// remove it from the remove map
-					delete removeDocs[id];
+				// create temporary maps/arrays
+				var removeDocs = {};
+				var updateDocs = [];
+				var createDocs = [];
+				
+				// change the results to a map of {_id: {object including _id}}
+				// and push it into the remove array
+				var temp = {};
+				for (var i = results.length - 1; i >= 0; i--) {
+					temp[results[i]._id] = results[i];
+					removeDocs[results[i]._id] = results[i];
+				};
+				results = temp;
+
+				// seperate the request into the groups
+				for (var i = req.body.length - 1; i >= 0; i--) {
+					// get the id from each object
+					var id = req.body[i]._id;
+
+					// if the item doesn't have an id, create it
+					if(id == null) {
+						createDocs.push(req.body[i]);
+
+					// otherwise modify it
+					} else {
+						// if the object does not have a match, then it is new, but has it's own _id
+						// do not allow any PUT that does a custom _id
+						if(results[id] == null)
+							return error(400, "New document must not have _id");
+						
+						// push it to the update
+						updateDocs.push(req.body[i]);
+						// remove it from the remove map
+						delete removeDocs[id];
+					}
+				};
+
+				// define failure rollback maps
+				var resetCreate = [];
+				var resetModify = [];
+				var resetRemove = [];
+
+				function success() {
+					exports.getCollection(Model, finished, passError)(req, res, next);
 				}
-			};
 
-			// define failure rollback maps
-			var resetCreate = [];
-			var resetModify = [];
-			var resetRemove = [];
+				// if the worst happens, attempt to fix
+				function rollback(err) {
+					console.log("Recovering!");
+					var createFn = createNextDoc(Model, resetRemove, results, [], rollbackSuccessful, rollbackUnsuccessful);
+					var updateFn = updateNextDoc(Model, updateDocs, results, [], createFn, rollbackUnsuccessful);
+					var removeFn = removeNextDoc(Model, resetCreate, results, [], updateFn, rollbackUnsuccessful);
+					removeFn();
+				}
 
-			function success() {
-				exports.getCollection(Model, finished, passError)(req, res, next);
-			}
+				function rollbackSuccessful(err) {
+					console.log("Recovery Succeed!");
+					return error(500, err);
+				}
 
-			// if the worst happens, attempt to fix
-			function rollback(err) {
-				console.log("Recovering!");
-				var createFn = createNextDoc(Model, resetRemove, results, [], rollbackSuccessful, rollbackUnsuccessful);
-				var updateFn = updateNextDoc(Model, updateDocs, results, [], createFn, rollbackUnsuccessful);
-				var removeFn = removeNextDoc(Model, resetCreate, results, [], updateFn, rollbackUnsuccessful);
-				removeFn();
-			}
+				function rollbackUnsuccessful(err) {
+					console.log("Recovery Failed!");
+					return error(500, err);
+				}
 
-			function rollbackSuccessful(err) {
-				console.log("Recovery Succeed!");
-				return error(500, err);
-			}
-
-			function rollbackUnsuccessful(err) {
-				console.log("Recovery Failed!");
-				return error(500, err);
-			}
-
-			var removeFn = removeNextDoc(Model, removeDocs, results, resetRemove, success, rollback);
-			var updateFn = updateNextDoc(Model, updateDocs, results, resetModify, removeFn, rollback);
-			var createFn = createNextDoc(Model, createDocs, results, resetCreate, updateFn, rollback);
-			createFn();
-		});
+				var removeFn = removeNextDoc(Model, removeDocs, results, resetRemove, success, rollback);
+				var updateFn = updateNextDoc(Model, updateDocs, results, resetModify, removeFn, rollback);
+				var createFn = createNextDoc(Model, createDocs, results, resetCreate, updateFn, rollback);
+				createFn();
+			});
+		});	
 	}
 }
 
