@@ -13,13 +13,13 @@ EventSchema = mongoose.Schema({
   description: String,
   rank: Number,
   rsvp: Number,
-  creator: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile'} 
+  creator: {type: mongoose.Schema.Types.ObjectId, ref: 'User'} 
 });
 
 Event = mongoose.model('Event', EventSchema);
 
 
-ProfileSchema = mongoose.Schema({
+UserSchema = mongoose.Schema({
   name: String,
   email: String,
   myEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
@@ -30,4 +30,4 @@ ProfileSchema = mongoose.Schema({
   blacklisted: Boolean
 });
 
-Profile = mongoose.model('Profile', ProfileSchema);
+User = mongoose.model('User', UserSchema);

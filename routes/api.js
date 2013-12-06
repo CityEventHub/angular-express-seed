@@ -67,18 +67,27 @@ exports.load = function(app) {
 
 	// Events:
 	app.get('/api/events', crud.getCollection(Event, true));
-	app.post('/api/events', permissions, crud.postCollection(Event, true));
+	app.post('/api/events', initEventConsts, crud.postCollection(Event, true));
 
 	app.get('/api/events/:_id', crud.getDocument(Event, true));
 	app.put('/api/events/:_id', permissions, crud.putDocument(Event, true));
 	app.delete('/api/events/:_id', permissions, crud.deleteDocument(Event, true));
 
+	app.get('/api/users', crud.getCollection(User, true));
+	app.post('/api/users', permissions, crud.postCollection(User, true));
+
+	app.get('/api/users/:_id', crud.getDocument(User, true));
+	app.put('/api/users/:_id', permissions, crud.putDocument(User, true));
+	app.delete('/api/users/:_id', permissions, crud.deleteDocument(User, true));
+
 };
 
-function enforceCreator(req, res, next) {
+function initEventConsts(req, res, next) {
 	if (req && req.body) {
 		// we'll need to set this to the user. Perhaps discover the user in permissions?
 		req.body.creator = "529d09bb554a5a3369000002";
+		req.body.rank = 0;
+		req.body.rsvp = 0;
 	}
 
 	next && next();

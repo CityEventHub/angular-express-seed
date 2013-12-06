@@ -40,8 +40,11 @@ angular.module('CityEventHub')
 		if(mode.type == "Edit")
 			event.$update();
 		else if(mode.type == "Create")
-			Events.save(event);
+			Events.save(event, function() {
 
+				alert("Successfully created event!");
+				$scope['event'] = {};
+			});
 	}
 
 	// export vars to $scope
