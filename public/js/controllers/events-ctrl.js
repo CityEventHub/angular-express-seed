@@ -2,13 +2,16 @@
 
 //this is the controller that handles events, it may contain a :search routeparam to have a query already
 angular.module('CityEventHub')
-.controller('EventsCtrl',['$scope','Users','Events',function($scope, Users, Events) {
-
+.controller('EventsCtrl',['$scope','Users','Events','$routeParams',function($scope, Users, Events, $routeParams) {
+	
 	$scope.events = Events.query();
-	$scope.users = Users.query();
+
+	if($routeParams['search']){
+		$scope.searchString = $routeParams['search'];
+	}
 
 	$scope.saveProfile = function(){
-		$scope.users.$update();
+		//$scope.users.$update();
 	};
 
 
@@ -32,6 +35,5 @@ angular.module('CityEventHub')
 	$scope.sendToEventPage = function(event){
 		window.location.href = 'event/' + event._id;
 	};
-
 
 }]);

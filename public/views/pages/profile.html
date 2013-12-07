@@ -1,19 +1,21 @@
 <div class="page-profile">
-	<h1 class="center-text">My Profile</h1>
+	<h1 class="center-text">My Profile <span ng-show="user.name">({{user.name}})</span></h1>
 	<div class="my-settings-panel up-margin">
 		<br><br><br>
 		<h3>My Settings</h3>
-		<label><input type="checkbox" ng-model="settings.displayInfo"> Display my info in events </label><br><br>
-		<label><input type="checkbox" ng-model="settings.showRsvpNums"> Show RSVP numbers in events </label><br><br>
-		<label><input type="checkbox" ng-model="settings.emailMe"> Email me </label><br><br>
+		<label><input type="checkbox" ng-model="user.settingDisplayInfo" ng-click="updateProfile()"> Display my info in events </label><br><br>
+		<label><input type="checkbox" ng-model="user.settingShowRsvp" ng-click="updateProfile()"> Show RSVP numbers in events </label><br><br>
+		<label><input type="checkbox" ng-model="user.settingEmailMe" ng-click="updateProfile()"> Email me </label><br>
+		<span ng-show="user.email">({{user.email}})</span><br>
 	</div>
 	<div class="my-events-panel up-margin">
 		<h2 class="center-text bottom-margin"><u>My Events (I created)</u></h2><br>
-		<div class="my-profile-event border-with-shadow" ng-repeat="event in myEvents">
+		<div class="my-profile-event border-with-shadow" ng-repeat="event in user.myEvents">
 			<div>
+				<span class="event-rank">Rank: {{event.rank}} <br>rsvp: {{event.rsvp}}</span>
 				<span ng-click="sendToEventPage(event)" class="clickable"><b>{{event.title}}</b></span><br>
 				<i>Location:</i> {{event.location}}<br>
-				<i>Time:</i> {{event.time}}<br>
+				<i>Time:</i> {{event.time}} {{event.date | date: MMM-dd-yy}}<br>
 				<i>Description:</i> {{event.description}}
 			</div>
 			<!-- <div class="float-right">
@@ -27,12 +29,12 @@
 	</div>
 	<div class="my-upcoming-events-panel up-margin">
 		<h2 class="center-text bottom-margin"><u>Upcoming Events</u></h2><br>
-		<div class="my-profile-event border-with-shadow" ng-repeat="event in myUpcomingEvents">
+		<div class="my-profile-event border-with-shadow" ng-repeat="event in user.upcomingEvents | orderBy: 'date'">
 			<div>
-				<span class="event-rank">Rank: {{event.rank}}</span>
+				<span class="event-rank">Rank: {{event.rank}} <br>rsvp: {{event.rsvp}}</span>
 				<span ng-click="sendToEventPage(event)" class="clickable"><b>{{event.title}}</b></span><br>
 				<i>Location:</i> {{event.location}}<br>
-				<i>Time:</i> {{event.time}}<br>
+				<i>Time:</i> {{event.time}} {{event.date | date: MMM-dd-yy}}<br>
 				<i>Description:</i> {{event.description}}
 			</div>
 			<!-- <div class="float-right">
