@@ -1,37 +1,25 @@
 <section class="page-homepage">
-	<div class="top-banner">
-		<div class = "main-message">
-			<h1>Looking for something</h1>
-			<h1 class = "indent">to do?</h1>
-			<h1>Find events</h1>
-			<h1 class = "indent">near YOU!</h1>
-			<div class="search-box">
-				<form ng-submit="goToEvents()">
-					<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23" >
-				</form> 
-			</div>
+	<div class="page-wrapper">
+		<div class = "find-events">
+			<span>Looking for Somthing</span>
+			<br>
+			<span>to Do?</span>
+			<br>
+			<span>Find Events Near You!</span>
+			<form ng-submit="goToEvents()">
+				<input type="text" ng-model="searchBox" placeholder="zipcode, city, etc" size="23" >
+				<br>
+				<button type="submit">Find Events</button>
+			</form> 
 		</div>
-		<div class="image-event">
-			<span class="glyphicon glyphicon-chevron-left"/>
-			<div>
-				<img src="images/events.gif"/>
-			</div>
-			<span class="glyphicon glyphicon-chevron-right"/>
-		</div>
-	</div>
-	<div class = "hosting-event">
-		<div class = "hosting-wrapper">
-			<div class="host-message">
-				<h1>Hosting</h1>
-				<h1 class = "indent">an</h1>
-				<h1 class = "indent">event</h1>
-			</div>
+		<div class = "host-events">
+			<div class="header">Hosting an Event</div>
 			<form class="sign-up">
-				<h1>Sign Up</h1>
+				<span>Sign Up</span>
 				<input type="text" ng-model="email" required placeholder="Email" size="23">
 				<input type="text" ng-model="username" required placeholder="Username" size="23">
 				<input type="password" ng-model="password" required placeholder="Password" size="23">
-				<button class="btn btn-primary sign-up-button" type="submit">Sign Up</button>
+				<button type="submit">Sign Up</button>
 			</form>
 		</div>
 	</div>
