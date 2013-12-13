@@ -49,6 +49,7 @@ require('./schemas.js');
 // see crud.js for more information
 var crud = require('./crud.js');
 
+var passport = require('passport');
 
 // Load the routes. we may want to break this up into subfunctions later.
 exports.load = function(app) {
@@ -64,6 +65,13 @@ exports.load = function(app) {
 	app.get('/api/names/:_id', crud.getDocument(Name), doMore);
 	app.put('/api/names/:_id', permissions, crud.putDocument(Name), doMore);
 	app.delete('/api/names/:_id', permissions, crud.deleteDocument(Name), doMore);
+
+        // Auth:
+        // QUESTION - HOW DO I GET THE PASSPORT VAR INTO HERE FROM nodeapp.js??????
+        app.post('/login', passport.authenticate('local', { successRedirect: '/',
+                                                             failureRedirect: '/login',
+                                                             failureFlash: true})
+        );
 
 	// Events:
 	app.get('/api/events', crud.getCollection(Event, true));
