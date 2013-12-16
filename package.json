@@ -1,10 +1,18 @@
 {
 	"name": "city-event-hub",
-	"version": "0.0.3",
-	"code-name": "frontendPrettyness",
+	"version": "0.0.4",
+	"code-name": "auth-lockdown",
 	"private": false,
+	"repository": {
+		"type" : "git",
+		"url" : "https://github.com/CityEventHub/city-event-hub.git"
+	},
 	"dependencies": {
-		"express": "3.4.2",
-		"mongoose": "3.6"
+		"express": "3.4.x",
+		"mongoose": "3.6.x",
+		"passport": "0.1.x",
+		"passport-local": "0.1.x",
+		"connect-flash": "0.1.x",
+		"bcrypt-nodejs": "0.0.x"
 	}
 }
