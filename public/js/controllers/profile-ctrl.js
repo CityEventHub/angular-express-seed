@@ -2,11 +2,11 @@
 
 //this is the controller that handles profiles, it will contain a :id routeparam to get the profile
 angular.module('CityEventHub')
-.controller('ProfileCtrl',['$scope','Users','Events',function($scope,  Users, Events) {
+.controller('ProfileCtrl',['$scope','Users','Events','$rootScope',function($scope,  Users, Events,$rootScope) {
 
 	$scope.user = Users.query();
 	console.log($scope.user);
-
+	$rootScope.activeTab = 3;
 	$scope.updateProfile = function(){
 		$scope.user = Users.update();
 	}

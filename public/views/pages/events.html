@@ -1,34 +1,32 @@
 <div class="page-events">
-	<h1 class="center-text">Search For Events</h1>
-		<div class="search-box">
-			<input type="text" ng-model="searchString" placeholder="zipcode, city, etc" size="23">
-		</div>
-	<div class="tag-filter-panel">
-		<h3>Tag Filter</h3>
-		<div ng-repeat="tag in tags">
-			<label><input type="checkbox" ng-model="tag.isChecked"> {{tag.name}} </label><br><br>
-		</div>
+	<div class = "header">
+		<span class = "pull-left">Find Events</span>
+		<input class = "pull-right" type="text" ng-model="searchString" placeholder="Search Events" size="23">
 	</div>
 	<div class="events-panel">
-		<div class="searching-for-event border-with-shadow" ng-repeat="event in events | orderBy: 'date' | filter: searchString">
-			<div>
+		<div class="event-wrapper clickable" ng-click="sendToEventPage(event)" ng-repeat="event in events | orderBy: 'date' | filter: searchString">
+			<div class = "event-header">
+				<span  class="clickable">{{event.title}}</span>
+			</div>
+			<div class = "event-info">
 				<span class="event-rank">Rank: {{event.rank}} <br>rsvp: {{event.rsvp}}</span>
-				<span ng-click="sendToEventPage(event)" class="clickable"><b>{{event.title}}</b></span><br>
 				<i>Location:</i> {{event.location}}<br>
 				<i>Time:</i> {{event.time}} {{event.date | date: MMM-dd-yy}}<br>
-				<i>Description:</i> {{event.description}}
+				<i class = "description">Description:</i> {{event.description}}
 			</div>
-			<!-- <div class="float-right">
-				<button ng-click="">T</button>
-				<button ng-click="">F</button>
-				<button ng-click="">#</button>
-			</div> -->
-			<button ng-click="sendToEventPage(event)">See More Details</button>
-			<br>
 		</div>
 	</div>
-	<div class="map-panel">
-		One day a real google map might be here :)
-		<img src="/images/googleMap.png" class="map-image">
+	<div class = "option-panel">
+		<!--<div class="tag-filter-panel">
+			<span>Filter by Tag:</span>
+			<div ng-repeat="tag in tags">
+				<label><input type="checkbox" ng-model="tag.isChecked"> {{tag.name}} </label><br><br>
+			</div>
+		</div>-->
+		<div class="map-panel">
+			<img src="/images/googleMap.png" class="map-image">
+		</div>
 	</div>
+	
+	
 </div>

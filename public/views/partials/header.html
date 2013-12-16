@@ -4,10 +4,10 @@
 			<a href="{{home.url}}" ng-click="changeActiveTab(0)"><img class = "header-img" src="images/EventHub.png"/></a>
 			<div class="header-links" role="navigation">
 				<span class = "tabs" ng-repeat="link in links">
-						<a href="{{link.url}}" ng-click="changeActiveTab(link.number)" ng-class="{active : linknumber==link.number}">{{link.text}}</a>
+						<a href="{{link.url}}" ng-click="changeActiveTab(link.number)" ng-class="{active : activeTab==link.number}">{{link.text}}</a>
 				</span>
 				<span class = "tabs">
-					<a href="/profile/{{user.id}}" ng-click="changeActiveTab(4)" ng-class="{active : linknumber==4}">My Profile</a>
+					<a href="/profile/{{user.id}}" ng-click="changeActiveTab(3)" ng-class="{active : activeTab==3}">My Profile</a>
 				</span>
 				<form class="sign-in-form">
 					<input type="text" required placeholder="Username">

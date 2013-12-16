@@ -1,34 +1,66 @@
 <div class="page-event">
 
-	<header>
-		{{mode.type}} an event
-	</header>
+	<div ng-if="mode.type != 'View'" class = "header">
+		<span class = "pull-left">Create An Event</span>
+		<span class = "pull-right preview">Event Preview</span>
+	</div>
+	<div ng-if="mode.type != 'View'" class = "event-form">
+		<form ng-if="mode.type != 'View'">
+			<label>
+				<div>Title:</div>
+				<input type="text" ng-model="event.title" />
+			</label>
+			<br>
+			<label>
+				<div>Location:</div>
+				<input type="text" ng-model="event.location" />
+			</label>
+			<br>
+			<label>
+				<div>Date</div>
+				<input type="date" ng-model="event.date" />
+			</label>
+			<br>
+			<label>
+				<div>Time</div>
+				<input type="text" ng-model="event.time" />
+			</label>
+			<br>
+			<label>
+				<div>Details:</div>
+				<textarea ng-model="event.description"></textarea>
+			</label>
+			<br>
+			<!-- <label>
+				<div>Upload Photos:</div>
+				<input type="file" />
+			</label> -->
 
-	<form ng-if="mode.type != 'View'">
-		<label>
-			<div>Title:</div>
-			<input type="text" ng-model="event.title" />
-		</label>
-		<label>
-			<div>Location:</div>
-			<input type="text" ng-model="event.location" />
-		</label>
-		<label>
-			<div>Date/Time:</div>
-			<input type="date" ng-model="event.date" />
-			<input type="text" ng-model="event.time" />
-		</label>
-		<label>
-			<div>Details:</div>
-			<textarea ng-model="event.description"></textarea>
-		</label>
-		<!-- <label>
-			<div>Upload Photos:</div>
-			<input type="file" />
-		</label> -->
-
-		<button ng-click="submitChanges()">{{mode.type}} Event:</button>
-	</form>
-
-
+			<button class = "sign-up-button" ng-click="submitChanges()">{{mode.type}} Event</button>
+		</form>
+	</div>
+	<div ng-class="{eventpreview:!isView(),fullevent:isView()}">
+		<div ng-if="mode.type != 'View'" class="event-wrapper clickable" >
+			<div class = "event-header">
+				<span  class="">{{event.title}}</span>
+			</div>
+			<div class = "event-info">
+				<span class="event-rank">Rank: {{event.rank}} <br>rsvp: {{event.rsvp}}</span>
+				<i>Location:</i> {{event.location}}<br>
+				<i>Time:</i> {{event.time}} {{event.date | date: MMM-dd-yy}}<br>
+				<i class = "description">Description:</i> {{event.description}}
+			</div>
+		</div>
+		<div ng-class="{mindisplay:!isView(),largedisplay:isView()}">
+			<div class = "header">
+				<span class = "pull-left">{{event.title}}</span>
+			</div>
+			<div class = "event-info">
+			<label><i>Location: </i>{{event.location}}</label><br>
+			<label><i>Time:</i> {{event.time}} {{event.date | date: MMM-dd-yy}}</label><br>
+			<label><i class = "description">Description:</i> {{event.description}}</label><br>
+			<button class = "sign-up-button" ng-click="rsvp()">RSVP to Event</button>
+			</div>
+		</div>
+	</div>
 </div>

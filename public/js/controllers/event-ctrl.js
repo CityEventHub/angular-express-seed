@@ -2,10 +2,11 @@
 
 //this is the controller that handles a single event, it will contain a :id routeparam to get the event
 angular.module('CityEventHub')
-.controller('EventCtrl',['$scope','Events','$routeParams',
-				 function($scope,  Events,  $routeParams) {
+.controller('EventCtrl',['$scope','Events','$routeParams','$rootScope',
+				 function($scope,  Events,  $routeParams,$rootScope) {
 
 	// init vars
+	$rootScope.activeTab = 2;
 	var event = {};
 	var mode = {type: "View"};
 
@@ -27,6 +28,13 @@ angular.module('CityEventHub')
 
 	} else {
 		mode.type = "Create";
+	}
+
+	function isView(){
+		if (mode.type == "View")
+			return true;
+		else
+			return false;
 	}
 
 	function toggleEdit(editBool) {
@@ -54,5 +62,6 @@ angular.module('CityEventHub')
 	// export functions to $scope
 	$scope['toggleEdit'] = toggleEdit;
 	$scope['submitChanges'] = submitChanges;
+	$scope['isView'] = isView;
 
 }]);
