@@ -59,7 +59,7 @@
 			<label><i>Location: </i>{{event.location}}</label><br>
 			<label><i>Time:</i> {{event.time}} {{event.date | date: MMM-dd-yy}}</label><br>
 			<label><i class = "description">Description:</i> {{event.description}}</label><br>
-			<button class = "sign-up-button" ng-click="rsvp()">RSVP to Event</button>
+			<button ng-show="isView()" class = "sign-up-button" ng-click="rsvp()">RSVP to Event</button>
 			</div>
 		</div>
 	</div>
