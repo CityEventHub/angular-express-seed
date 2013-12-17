@@ -23,7 +23,6 @@ UserSchema = mongoose.Schema({
   name: String,
   email: String,
   password: String,
-  salt: String,
   myEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
   upcomingEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
   settingDisplayInfo: Boolean,

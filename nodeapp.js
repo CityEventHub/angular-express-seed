@@ -6,6 +6,8 @@
 express = require('express');
 mongoose = require('mongoose');
 passport = require('passport');
+bcrypt = require('bcrypt-nodejs');
+flash = require('connect-flash');
 LocalStrategy = require('passport-local').Strategy;
 require("./routes/monkey-patches.js");
 
@@ -32,6 +34,7 @@ app.use(express.methodOverride());
 app.use(express.static('public'));
 app.use(express.errorHandler());
 app.use(app.router);
+app.use(flash());
 
 
 // allow for persistent sessions
@@ -57,10 +60,16 @@ passport.use(new LocalStrategy(
 			if (!user) 
 				return done(null, false, { message: 'Unknown user: ' + username });
 			// take received password and hash it with the user's salt here
-			if (user.password != password) 
-				return done(null, false, { message: 'Invalid password' });
+                        bcrypt.compare(password, user.password, function(err, res) {
+                            if (res)
+                                return done(null, user);
+                            else
+                                return  done(null, false, { message: 'Invalid password' });
+                        });
+			// if (user.password != password) 
+			// 	return done(null, false, { message: 'Invalid password' });
 
-			return done(null, user);
+			// return done(null, user);
 		})
 	}
 ));
