@@ -49,7 +49,6 @@ require('./schemas.js');
 // see crud.js for more information
 var crud = require('./crud.js');
 
-//var passport = require('passport');
 
 // Load the routes. we may want to break this up into subfunctions later.
 exports.load = function(app) {
@@ -66,13 +65,18 @@ exports.load = function(app) {
 	app.put('/api/names/:_id', permissions, crud.putDocument(Name), doMore);
 	app.delete('/api/names/:_id', permissions, crud.deleteDocument(Name), doMore);
 
-        // Auth:
-        // QUESTION - HOW DO I GET THE PASSPORT VAR INTO HERE FROM nodeapp.js??????
-        // app.post('/login', passport.authenticate('local', { successRedirect: '/',
-        //                                                      failureRedirect: '/login',
-        //                                                      failureFlash: true})
-        // );
-
+        app.get('/login', function(req, res) {
+            // send to a login page
+        });
+        app.post('/api/login', passport.authenticate('local', { successRedirect: '/',
+                                                             failureRedirect: '/login',
+                                                             failureFlash: true})
+        );
+        app.get('/logout', function(req, res) {
+            req.logout();
+            res.redirect('/');
+        });
+        
 	// Events:
 	app.get('/api/events', crud.getCollection(Event, true));
 	app.post('/api/events', initEventConsts, crud.postCollection(Event, true));
@@ -111,7 +115,9 @@ function permissions(req, res, next) {
 	// return res && res.status(403).json({error: "Forbidden", details: "Forbidden"});
 
 	// otherwise continue with the action
-	next && next();
+       
+        if (req.isAuthenticated()) { next && next(); }
+        res.redirect('/login');
 }
 
 function doMore(req, res, next) {
