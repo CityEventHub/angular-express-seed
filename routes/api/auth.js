@@ -20,31 +20,37 @@ exports.load = function(crud, gm) {
 		res.redirect('/');
 	});
 	app.post('/api/signup', function(req, res) {
-            if (!req.body.Name){}
+            if (!req.body.name){}
                 // error
-            if (!req.body.Email){}
+            if (!req.body.email){}
                 //error
-            if (!req.body.Password){}
+            if (!req.body.password){}
                 // error
             // first ensure the email isnt already in user
-            User.findOne({ email: req.body.Email }, function(err, user) {
+            User.findOne({ email: req.body.email }, function(err, user) {
                 if (user) {
                     // email in use
                 }
             });
             // save the data to a new user
+            console.log(req.body);
             var user_data = {
-                name: req.body.Name,
-                email: req.body.Email,
-                password: bcrypt.hashSync(req.body.Password)
+                name: req.body.name ,
+                email: req.body.email,
+                password: bcrypt.hashSync(req.body.password),
+                settingDisplayInfo: true,
+                settingShowRsvp: true,
+                settingEmailMe: true,
+                blacklisted: false
             }
-            User.insert(user_data);
-            // var new_user = new User(user_data);
-            // new_user.save( function(err, data) {
-            //     if (error)
-            //         res.json(error);
-            //     else
-            //         res.json(data);
-            // });
+            // User.insert(user_data);
+            var new_user = new User(user_data);
+            new_user.save( function(err, data) {
+                if (err)
+                    res.json(err);
+                else {
+                    res.redirect('/');
+                }
+            });
         });
 }

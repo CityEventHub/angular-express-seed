@@ -28,13 +28,18 @@ app.set('port', process.env.PORT || 5000);
 app.use(express.compress());
 app.use(express.urlencoded())
 app.use(express.json())
+app.use(express.static('public'));
 app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.static('public'));
 app.use(express.errorHandler());
-app.use(app.router);
 app.use(flash());
+// passport
+app.use(express.session({secret: 'some secret'}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(app.router);
 
 
 // allow for persistent sessions
@@ -73,11 +78,6 @@ passport.use(new LocalStrategy(
 		})
 	}
 ));
-
-// passport
-app.use(express.session({secret: 'some secret'}));
-app.use(passport.initialize());
-app.use(passport.session());
 
 // serve JSON API
 require('./routes/api');
