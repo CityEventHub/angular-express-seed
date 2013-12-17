@@ -19,13 +19,12 @@ angular.module('CityEventHub')
 	};
 
 	$scope.futureEvent = function(eventDate){
-		console.log(new Date(eventDate), new Date());
 		if(new Date(eventDate) >= new Date())
 			return true;
 		return false;
-	}
+	};
 
-
+	//might be used one day if tags are implemented
 	// $rootScopeope.tags = [{
 	// 	"name": "Party",
 	// 	"isChecked": false
