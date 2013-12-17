@@ -4,9 +4,9 @@
 		<input class = "pull-right" type="text" ng-model="searchString" placeholder="Search Events" size="23">
 	</div>
 	<div class="events-panel">
-		<div class="event-wrapper clickable" ng-click="sendToEventPage(event)" ng-repeat="event in events | orderBy: 'date' | filter: searchString">
+		<div class="event-wrapper clickable" ng-click="sendToEventPage(event)" ng-repeat="event in events | orderBy: 'date' | filter: searchString" ng-show="futureEvent(event.date)">
 			<div class = "event-header">
-				<span  class="clickable">{{event.title}}</span>
+				<span class="clickable">{{event.title}}</span>
 			</div>
 			<div class = "event-info">
 				<span class="event-rank">Rank: {{event.rank}} <br>rsvp: {{event.rsvp}}</span>
@@ -17,6 +17,7 @@
 		</div>
 	</div>
 	<div class = "option-panel">
+		<!-- might be used one day if tags are implemented -->
 		<!--<div class="tag-filter-panel">
 			<span>Filter by Tag:</span>
 			<div ng-repeat="tag in tags">
@@ -24,7 +25,7 @@
 			</div>
 		</div>-->
 		<div class="map-panel">
-			<img src="/images/googleMap.png" class="map-image">
+			<div class = "map-canvas" id="map-canvas"/>
 		</div>
 	</div>
 	

@@ -25,7 +25,7 @@
 	</div>
 	<div class="my-upcoming-events-panel center-text">
 		<u>Upcoming Events</u><br>
-		<div class="event-wrapper " ng-click="sendToEventPage(event)" ng-repeat="event in user.upcomingEvents | orderBy: 'date'">
+		<div class="event-wrapper " ng-click="sendToEventPage(event)" ng-repeat="event in user.upcomingEvents | orderBy: 'date'" ng-show="futureEvent(event.date)">
 			<div class = "event-header">
 				<span  class="clickable">{{event.title}}</span>
 			</div>

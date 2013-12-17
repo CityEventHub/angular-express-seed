@@ -9,24 +9,11 @@
 				<span class = "tabs">
 					<a href="/profile/{{user.id}}" ng-click="changeActiveTab(3)" ng-class="{active : activeTab==3}">My Profile</a>
 				</span>
-				<!-- <form class="sign-in-form"> -->
-				<!-- 	<input type="text" required placeholder="Username"> -->
-				<!-- 	<input type="password" required placeholder="Password"> -->
-				<!-- 	<button type="submit" class = "sign-up-button">Sign In</button> -->
-				<!-- </form> -->
-                                <form action="/api/login" method="post" class="sign-in-form">
-                                    <div>
-                                        <label>Email:</label>
-                                        <input type="text" name="email"/>
-                                    </div>
-                                    <div>
-                                        <label>Password:</label>
-                                        <input type="password" name="password"/>
-                                    </div>
-                                    <div>
-                                        <input type="submit" value="Log in"/>
-                                    </div>
-                                </form>
+				<form action="/api/login" method="post" class="sign-in-form">
+					<input type="text" required placeholder="email" name="email"/>
+					<input type="password" required placeholder="Password" name="password">
+					<button type="submit" class="sign-up-button">Sign In</button>
+				</form>
 			</div>
 		</div>
 	</div>
