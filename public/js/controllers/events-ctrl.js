@@ -8,6 +8,7 @@ angular.module('CityEventHub')
 		$scope.events = data;
 		$scope.putEventsOnMap();
 	});
+
 	$rootScope.activeTab = 1;
 	if($routeParams['search']){
 		$scope.searchString = $routeParams['search'];
@@ -17,23 +18,30 @@ angular.module('CityEventHub')
 		//$scope.users.$update();
 	};
 
+	$scope.futureEvent = function(eventDate){
+		console.log(new Date(eventDate), new Date());
+		if(new Date(eventDate) >= new Date())
+			return true;
+		return false;
+	}
 
-	$scope.tags = [{
-		"name": "Party",
-		"isChecked": false
-	},
-	{
-		"name": "Garage Sale",
-		"isChecked": false
-	},
-	{
-		"name": "City",
-		"isChecked": false
-	},
-	{
-		"name": "Community",
-		"isChecked": false
-	}];
+
+	// $rootScopeope.tags = [{
+	// 	"name": "Party",
+	// 	"isChecked": false
+	// },
+	// {
+	// 	"name": "Garage Sale",
+	// 	"isChecked": false
+	// },
+	// {
+	// 	"name": "City",
+	// 	"isChecked": false
+	// },
+	// {
+	// 	"name": "Community",
+	// 	"isChecked": false
+	// }];
 
 	$scope.sendToEventPage = function(event){
 		window.location.href = 'event/' + event._id;
