@@ -14,6 +14,17 @@ exports.load = function(crud, gm) {
 	// 	// send to a login page
 	// });
 
+        app.get('/auth/twitter',
+                passport.authenticate('twitter'),
+                function(req, res) {
+                    // redirect to twitter so this isnt called
+        });
+
+        app.get('/auth/twitter/callback',
+                passport.authenticate('twitter', { failureRedirect: '/'}),
+                function(req, res) {
+                    res.redirect('/');
+        });
 	app.post('/api/login', passport.authenticate('local', config));
 	app.get('/api/logout', function(req, res) {
 		req.logout();
@@ -33,7 +44,7 @@ exports.load = function(crud, gm) {
                 }
             });
             // save the data to a new user
-            console.log(req.body);
+            // console.log(req.body);
             var user_data = {
                 name: req.body.name ,
                 email: req.body.email,
@@ -41,9 +52,9 @@ exports.load = function(crud, gm) {
                 settingDisplayInfo: true,
                 settingShowRsvp: true,
                 settingEmailMe: true,
-                blacklisted: false
+                blacklisted: false,
+                twitterId: ''
             }
-            // User.insert(user_data);
             var new_user = new User(user_data);
             new_user.save( function(err, data) {
                 if (err)

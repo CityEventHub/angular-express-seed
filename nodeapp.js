@@ -9,6 +9,11 @@ passport = require('passport');
 bcrypt = require('bcrypt-nodejs');
 flash = require('connect-flash');
 LocalStrategy = require('passport-local').Strategy;
+TwitterStrategy = require('passport-twitter').Strategy;
+
+TWITTER_CONSUMER_KEY = 'la1xewMtcHGit2PROCdSuA';
+TWITTER_CONSUMER_SECRET = 'EwuC9cEOeIqQBdxKswcNueCuy7qUjsd5oxNgGzyw';
+
 require("./routes/monkey-patches.js");
 
 mongoose.connection.on('open', function (ref) {
@@ -79,6 +84,49 @@ passport.use(new LocalStrategy(
 	}
 ));
 
+passport.use(new TwitterStrategy({
+    consumerKey: TWITTER_CONSUMER_KEY,
+    consumerSecret: TWITTER_CONSUMER_SECRET,
+    callbackURL: 'http://padme.cs.byu.edu:15213/auth/twitter/callback'
+    },
+    function(token, tokenSecret, profile, done) {
+        // User.findOne({uid: profile.id}, function(err, user) {
+        //     if (user) { done(null, user); }
+        //     else {
+        //         var user = new User();
+        //         user.provider = 'twitter';
+        //         user.uid = profile.id;
+        //         user.name = profile.displayName;
+        //         user.email = kkkk
+        User.findOrCreate({ twitterId: profile.id }, function(err, user) {
+            if (err) { return done(err); }
+            if (!user) {
+                // create a new user
+                var user_data = {
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    password: '',
+                    settingDisplayInfo: true,
+                    settingShowRsvp: true,
+                    settingEmailMe: true,
+                    blacklisted: false,
+                    twitterId: profile.id
+                }
+                var new_user = new User(user_data);
+                new_user.save( function(err, data) {
+                    if (err)
+                        res.json(err);
+                    else {
+                        res.redirect('/');
+                    }
+                });
+                return done(null, new_user);
+            }
+            return done(null, user);
+        });
+    }
+));
+
 // serve JSON API
 require('./routes/api');
 
@@ -88,7 +136,7 @@ app.get('*', function(req, res) {
 });
 
 // Start server
-app.listen(app.get('port'), function(){
+app.listen(/*app.get('port')*/15213, 'padme.cs.byu.edu', function(){
 	console.log("Express server listening on port %d in %s mode", app.get('port'), app.settings.env);
 });
 

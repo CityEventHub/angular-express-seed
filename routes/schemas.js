@@ -19,6 +19,7 @@ EventSchema = mongoose.Schema({
 Event = mongoose.model('Event', EventSchema);
 
 
+var findOrCreate = require('mongoose-findorcreate');
 UserSchema = mongoose.Schema({
   name: String,
   email: String,
@@ -28,7 +29,9 @@ UserSchema = mongoose.Schema({
   settingDisplayInfo: Boolean,
   settingShowRsvp: Boolean,
   settingEmailMe: Boolean,
-  blacklisted: Boolean
+  blacklisted: Boolean,
+  twitterId: String
 });
+UserSchema.plugin(findOrCreate);
 
 User = mongoose.model('User', UserSchema);
