@@ -31,7 +31,7 @@ angular.module('CityEventHub', ['ngRoute','ngResource'])
 		controller: 'EventsCtrl',
 		tabName: "Events"
 
-	}).when('/profile/:profileid',{
+	}).when('/profile',{
 		templateUrl:'/views/pages/profile.html',
 		controller: 'ProfileCtrl',
 		tabName: "Profile"

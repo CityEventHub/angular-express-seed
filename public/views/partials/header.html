@@ -7,7 +7,7 @@
 						<a href="{{link.url}}" ng-click="changeActiveTab(link.number)" ng-class="{active : activeTab==link.number}">{{link.text}}</a>
 				</span>
 				<span class="tabs" ng-if="loggedIn == 1">
-					<a href="/profile/{{user.id}}" ng-click="changeActiveTab(3)" ng-class="{active : activeTab==3}">My Profile</a> 
+					<a href="/profile" ng-click="changeActiveTab(3)" ng-class="{active : activeTab==3}">My Profile</a> 
 				</span>
 				<form action="/api/login" method="post" class="sign-in-form" ng-if="loggedIn == 0">
 					<input type="text" required placeholder="email" name="email"/>

@@ -4,11 +4,10 @@
 angular.module('CityEventHub')
 .controller('ProfileCtrl',['$scope','Users','Events','$rootScope',function($scope,  Users, Events,$rootScope) {
 
-	$scope.user = Users.query();
 	console.log($scope.user);
 	$rootScope.activeTab = 3;
 	$scope.updateProfile = function(){
-		$scope.user = Users.update();
+		$scope.user.update();
 	};
 
 	$scope.futureEvent = function(eventDate){
