@@ -25,43 +25,65 @@ exports.load = function(crud, gm) {
                 function(req, res) {
                     res.redirect('/');
         });
-	app.post('/api/login', passport.authenticate('local', config));
-	app.get('/api/logout', function(req, res) {
+	app.post('/api/login', lowercaseEmail, passport.authenticate('local', config));
+	app.get('/api/logout', function(req, res, next) {
 		req.logout();
 		res.redirect('/');
 	});
-	app.post('/api/signup', function(req, res) {
-            if (!req.body.name){}
-                // error
-            if (!req.body.email){}
-                //error
-            if (!req.body.password){}
-                // error
-            // first ensure the email isnt already in user
-            User.findOne({ email: req.body.email }, function(err, user) {
-                if (user) {
-                    // email in use
-                }
-            });
-            // save the data to a new user
-            // console.log(req.body);
-            var user_data = {
-                name: req.body.name ,
-                email: req.body.email,
-                password: bcrypt.hashSync(req.body.password),
-                settingDisplayInfo: true,
-                settingShowRsvp: true,
-                settingEmailMe: true,
-                blacklisted: false,
-                twitterId: ''
-            }
-            var new_user = new User(user_data);
-            new_user.save( function(err, data) {
-                if (err)
-                    res.json(err);
-                else {
-                    res.redirect('/');
-                }
-            });
-        });
+	app.post('/api/signup', lowercaseEmail, checkSignup, crud.postCollection(User, true), function(req, res, next) {
+		// signup worked and adding it to the collection worked
+		// login, and redirect to home.
+		req.login(req.resource, function(err) {
+			if(err) {
+				return res.status(500).json({
+					error: "Unable to login",
+					details: "Created account, but unable to login"
+				});
+			}
+			res.redirect('/');
+		});
+	});
+
+	function lowercaseEmail(req, res, next) {
+		var error = crud.errorHandler(User, req, res, next, false, "parsing request");
+
+		if (!req)
+			return error(500, "No request found");
+		if (!req.body)
+			return error(400, "No request body found");
+		if (!req.body.email)
+			return error(400, "Missing email from request");
+
+		req.body.email = req.body.email.toLowerCase();
+		next();
+	}
+
+
+	function checkSignup(req, res, next) {
+		
+		var error = crud.errorHandler(User, req, res, next, false, "signing up");
+		
+		// first ensure the email isnt already in user
+		User.findOne({email: req.body.email}, function(err, user) {
+			if (user)
+				return error(400, "Email already in use");
+
+			// encrypt the password
+			req.body.password = bcrypt.hashSync(req.body.password);
+			
+			// set default user data if it is not on the request
+			if (req.body.settingDisplayInfo == null)
+				req.body.settingDisplayInfo = true;
+			if (req.body.settingShowRsvp == null)
+				req.body.settingShowRsvp = true;
+			if (req.body.settingEmailMe == null)
+				req.body.settingEmailMe = true;
+			if (req.body.blacklisted == null)
+				req.body.blacklisted = false;
+                        req.body.twitterId = "";
+
+			// save the data to a new user
+			next();
+		});
+	}
 }
