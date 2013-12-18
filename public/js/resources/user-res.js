@@ -2,5 +2,5 @@
 
 angular.module('CityEventHub')
 .factory('Users', function($resource) {
-	return $resource('/api/users/:userid', {eventid: '@_id'});
+	return $resource('/api/user/:userid', {eventid: '@_id'});
 });

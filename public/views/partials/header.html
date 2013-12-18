@@ -1,27 +1,28 @@
 <nav>
 	<div class="partial-header" ng-controller="NavCtrl">
 		<div class="partial-wrapper">
-			<a href="{{home.url}}" ng-click="changeActiveTab(0)"><img class = "header-img" src="images/EventHub.png"/></a>
+			<a href="{{home.url}}" ng-click="changeActiveTab(0)"><img class="header-img" src="images/EventHub.png"/></a>
 			<div class="header-links" role="navigation">
-				<span class = "tabs" ng-repeat="link in links">
+				<span class="tabs" ng-repeat="link in links">
 						<a href="{{link.url}}" ng-click="changeActiveTab(link.number)" ng-class="{active : activeTab==link.number}">{{link.text}}</a>
 				</span>
-				<span class = "tabs">
-					<a href="/profile/{{user.id}}" ng-click="changeActiveTab(3)" ng-class="{active : activeTab==3}">My Profile</a>
+				<span class="tabs" ng-if="loggedIn == 1">
+					<a href="/profile/{{user.id}}" ng-click="changeActiveTab(3)" ng-class="{active : activeTab==3}">My Profile</a> 
 				</span>
-				<form action="/api/login" method="post" class="sign-in-form">
+				<form action="/api/login" method="post" class="sign-in-form" ng-if="loggedIn == 0">
 					<input type="text" required placeholder="email" name="email"/>
 					<input type="password" required placeholder="Password" name="password">
 					<button type="submit" class="sign-up-button">Sign In</button>
 				</form>
-                <form action="/auth/twitter" method="get" class="sign-in-form">
+                <form action="/auth/twitter" method="get" class="sign-in-form" ng-if="loggedIn == 0">
                     <button class="sign-up-button" type="submit">Twitter</button>
                 </form>
-                <form ng-hide="true" action="/logout" method="get">
+                <form action="/logout" method="get" ng-if="loggedIn == 1">
                     <button class="sign-up-button" type="submit">Log Out</button>
                 </form>
-                <!-- <a href="/auth/twitter">Sign in with Twitter</a> -->
-                <!-- <a href="/logout">LOG ME OUT FOO</a> -->
+                <div ng-if="loggedIn == 1">
+                	Welcome, {{user.name}}!
+                </span>
 			</div>
 		</div>
 	</div>
