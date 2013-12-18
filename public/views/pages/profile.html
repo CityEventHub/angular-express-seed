@@ -2,13 +2,13 @@
 	<div class = "header">
 		<span class = 'pull-left'>My Profile </span>
 	</div>
-	<div class="my-settings-panel">
+	<!-- <div class="my-settings-panel">
 		<span>My Settings</span>
 		<label><input type="checkbox" ng-model="user.settingDisplayInfo" ng-click="updateProfile()"> Display my info in events </label><br><br>
 		<label><input type="checkbox" ng-model="user.settingShowRsvp" ng-click="updateProfile()"> Show RSVP numbers in events </label><br><br>
 		<label><input type="checkbox" ng-model="user.settingEmailMe" ng-click="updateProfile()"> Email me </label><br>
 		<span ng-show="user.email">({{user.email}})</span><br>
-	</div>
+	</div> -->
 	<div class="my-events-panel center-text">
 		<u>My Events (I created)</u><br>
 		<div class="event-wrapper" ng-click="sendToEventPage(event)" ng-repeat="event in user.myEvents">

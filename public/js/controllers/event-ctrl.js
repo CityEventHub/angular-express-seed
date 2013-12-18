@@ -55,6 +55,10 @@ angular.module('CityEventHub')
 			});
 	}
 
+	function rsvp(){
+		Event.findByIdAndUpdate(req.params._id, {$inc: {RSVP: 1}});
+	}
+
 	// export vars to $scope
 	$scope['event'] = event;
 	$scope['mode'] = mode;
@@ -63,5 +67,6 @@ angular.module('CityEventHub')
 	$scope['toggleEdit'] = toggleEdit;
 	$scope['submitChanges'] = submitChanges;
 	$scope['isView'] = isView;
+	$scope['rsvp'] = rsvp;
 
 }]);
