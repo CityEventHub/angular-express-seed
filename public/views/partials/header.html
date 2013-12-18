@@ -17,12 +17,12 @@
                 <form action="/auth/twitter" method="get" class="sign-in-form" ng-if="loggedIn == 0">
                     <button class="sign-up-button" type="submit">Twitter</button>
                 </form>
-                <form action="/auth/logout" method="get" ng-if="loggedIn == 1">
+                 <div ng-if="loggedIn == 1" style="width: 215px;display: inline-block;margin-left: 43px;">
+                	Welcome, {{user.name}}!
+                </div>
+                <form action="/auth/logout" method="get" ng-if="loggedIn == 1" style="width: 100px;">
                     <button class="sign-up-button" type="submit">Log Out</button>
                 </form>
-                <div ng-if="loggedIn == 1">
-                	Welcome, {{user.name}}!
-                </span>
 			</div>
 		</div>
 	</div>

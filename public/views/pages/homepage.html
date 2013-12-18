@@ -14,7 +14,7 @@
 		</div>
 		<div class = "host-events" ng-if="loggedIn == 0">
 			<div class="header">Hosting an Event</div>
-			<form class="sign-up" action="/api/signup" method="post">
+			<form class="sign-up" action="/auth/signup" method="post">
 				<span>Sign Up</span>
 				<input type="text" name="email" ng-model="email" required placeholder="Email" size="23">
 				<input type="text" name="name" ng-model="name" required placeholder="Name" size="23">
