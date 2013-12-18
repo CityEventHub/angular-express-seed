@@ -25,12 +25,12 @@ exports.load = function(crud, gm) {
                 function(req, res) {
                     res.redirect('/');
         });
-	app.post('/api/login', lowercaseEmail, passport.authenticate('local', config));
-	app.get('/api/logout', function(req, res, next) {
+	app.post('/auth/login', lowercaseEmail, passport.authenticate('local', config));
+	app.get('/auth/logout', function(req, res, next) {
 		req.logout();
 		res.redirect('/');
 	});
-	app.post('/api/signup', lowercaseEmail, checkSignup, crud.postCollection(User, true), function(req, res, next) {
+	app.post('/auth/signup', lowercaseEmail, checkSignup, crud.postCollection(User, true), function(req, res, next) {
 		// signup worked and adding it to the collection worked
 		// login, and redirect to home.
 		req.login(req.resource, function(err) {
@@ -44,7 +44,7 @@ exports.load = function(crud, gm) {
 		});
 	});
 
-	app.get('/api/user', function(req, res, next) {
+	app.get('/auth/user', function(req, res, next) {
 		// if they are authenticated
 		if (req.isAuthenticated()) {
 			return User.findById(req.user._id, function(err, result) {

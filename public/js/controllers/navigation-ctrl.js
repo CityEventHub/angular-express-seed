@@ -2,8 +2,8 @@
 
 
 angular.module('CityEventHub')
-.controller('NavCtrl',['$scope','$route','$rootScope','Users'
-			  ,function($scope,  $route,  $rootScope,  Users) {
+.controller('NavCtrl',['$scope','$route','$rootScope','User'
+			  ,function($scope,  $route,  $rootScope,  User) {
 
 	$scope.home = {"url":"/"}
 	$scope.changeActiveTab = function(num){
@@ -15,7 +15,7 @@ angular.module('CityEventHub')
 
 	if($rootScope.loggedIn == null) {
 		$rootScope.loggedIn = -1;
-		Users.get(function success(user) {
+		User.get(function success(user) {
 			$rootScope.loggedIn = 1;
 			$rootScope.user = user;
 		}, function fail() {

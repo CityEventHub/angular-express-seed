@@ -2,7 +2,8 @@
 
 //this is the controller that handles events, it may contain a :search routeparam to have a query already
 angular.module('CityEventHub')
-.controller('EventsCtrl',['$scope','Users','Events','$routeParams','$rootScope',function($scope, Users, Events, $routeParams,$rootScope) {
+.controller('EventsCtrl',['$scope','User','Events','$routeParams','$rootScope'
+				 ,function($scope,  User,  Events,  $routeParams,  $rootScope) {
 	
 	Events.query(function success(data) {
 		$scope.events = data;
@@ -15,7 +16,7 @@ angular.module('CityEventHub')
 	}
 
 	$scope.saveProfile = function(){
-		//$scope.users.$update();
+		//$scope.user.$update();
 	};
 
 	$scope.futureEvent = function(eventDate){

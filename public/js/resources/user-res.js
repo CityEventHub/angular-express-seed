@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('CityEventHub')
-.factory('Users', function($resource) {
-	return $resource('/api/user/:userid', {eventid: '@_id'});
+.factory('User', function($resource) {
+	return $resource('/auth/user/:userid', {eventid: '@_id'});
 });
