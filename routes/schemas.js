@@ -19,11 +19,11 @@ EventSchema = mongoose.Schema({
 Event = mongoose.model('Event', EventSchema);
 
 
-var findOrCreate = require('mongoose-findorcreate');
+// var findOrCreate = require('mongoose-findorcreate');
 UserSchema = mongoose.Schema({
   name: String,
   email: String,
-  password: String,
+  password: { type: String, required: false}, 
   myEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
   upcomingEvents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event'}],
   settingDisplayInfo: Boolean,
@@ -32,6 +32,6 @@ UserSchema = mongoose.Schema({
   blacklisted: Boolean,
   twitterId: {type: String, required: false}
 });
-UserSchema.plugin(findOrCreate);
+// UserSchema.plugin(findOrCreate);
 
 User = mongoose.model('User', UserSchema);

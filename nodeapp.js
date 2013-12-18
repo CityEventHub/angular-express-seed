@@ -90,41 +90,34 @@ passport.use(new TwitterStrategy({
     callbackURL: 'http://padme.cs.byu.edu:15213/auth/twitter/callback'
     },
     function(token, tokenSecret, profile, done) {
-        // User.findOne({uid: profile.id}, function(err, user) {
-        //     if (user) { done(null, user); }
-        //     else {
-        //         var user = new User();
-        //         user.provider = 'twitter';
-        //         user.uid = profile.id;
-        //         user.name = profile.displayName;
-        //         user.email = kkkk
-        console.log('about to call findOrCreate');
-        User.findOrCreate({ twitterId: profile.id }, function(err, user) {
-            console.log('in the findOrCreate function');
+        // console.log(profile);
+        // console.log('about to call findOrCreate');
+        User.findOne({ twitterId: profile.id }, function(err, user) {
+            // console.log('in the findOrCreate function');
             if (err) { return done(err); }
             if (!user) {
-                console.log('user doesnt exist');
+                // console.log('user doesnt exist');
                 // create a new user
                 var user_data = {
                     name: profile.displayName,
-                    email: profile.emails[0].value,
-                    password: '',
+                    email: '@' + profile.screen_name,
+                    password: "",
                     settingDisplayInfo: true,
                     settingShowRsvp: true,
                     settingEmailMe: true,
                     blacklisted: false,
                     twitterId: profile.id
                 }
+                // console.log('created user data');
                 var new_user = new User(user_data);
                 new_user.save( function(err, data) {
                     if (err)
-                        res.json(err);
-                    else {
-                        res.redirect('/');
-                    }
+                        return done(null, false);
                 });
+                // console.log('saved user and returning now');
                 return done(null, new_user);
             }
+            // console.log('about to return the existing user');
             return done(null, user);
         });
     }
