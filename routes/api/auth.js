@@ -14,12 +14,12 @@ exports.load = function(crud, gm) {
 	// 	// send to a login page
 	// });
 
-	app.post('/api/login', passport.authenticate('local', config));
+	app.post('/api/login', lowercaseEmail, passport.authenticate('local', config));
 	app.get('/api/logout', function(req, res, next) {
 		req.logout();
 		res.redirect('/');
 	});
-	app.post('/api/signup', checkSignup, crud.postCollection(User, true), function(req, res, next) {
+	app.post('/api/signup', lowercaseEmail, checkSignup, crud.postCollection(User, true), function(req, res, next) {
 		// signup worked and adding it to the collection worked
 		// login, and redirect to home.
 		req.login(req.resource, function(err) {
@@ -33,10 +33,8 @@ exports.load = function(crud, gm) {
 		});
 	});
 
-
-	function checkSignup(req, res, next) {
-		
-		var error = crud.errorHandler(User, req, res, next, false, "signing up");
+	function lowercaseEmail(req, res, next) {
+		var error = crud.errorHandler(User, req, res, next, false, "parsing request");
 
 		if (!req)
 			return error(500, "No request found");
@@ -45,6 +43,15 @@ exports.load = function(crud, gm) {
 		if (!req.body.email)
 			return error(400, "Missing email from request");
 
+		req.body.email = req.body.email.toLowerCase();
+		next();
+	}
+
+
+	function checkSignup(req, res, next) {
+		
+		var error = crud.errorHandler(User, req, res, next, false, "signing up");
+		
 		// first ensure the email isnt already in user
 		User.findOne({email: req.body.email}, function(err, user) {
 			if (user)
