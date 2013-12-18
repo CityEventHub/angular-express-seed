@@ -30,7 +30,7 @@ UserSchema = mongoose.Schema({
   settingShowRsvp: Boolean,
   settingEmailMe: Boolean,
   blacklisted: Boolean,
-  twitterId: String
+  twitterId: {type: String, required: false}
 });
 UserSchema.plugin(findOrCreate);
 

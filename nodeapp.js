@@ -98,9 +98,12 @@ passport.use(new TwitterStrategy({
         //         user.uid = profile.id;
         //         user.name = profile.displayName;
         //         user.email = kkkk
+        console.log('about to call findOrCreate');
         User.findOrCreate({ twitterId: profile.id }, function(err, user) {
+            console.log('in the findOrCreate function');
             if (err) { return done(err); }
             if (!user) {
+                console.log('user doesnt exist');
                 // create a new user
                 var user_data = {
                     name: profile.displayName,
