@@ -14,14 +14,14 @@
 					<input type="password" required placeholder="Password" name="password">
 					<button type="submit" class="sign-up-button">Sign In</button>
 				</form>
-                                <form action="/auth/twitter" method="get" class="sign-in-form">
-                                    <button type="submit">Sign in with Twitter</button>
-                                </form>
-                                <form action="/logout" method="get">
-                                    <button type="submit">LOG ME OUT FOO</button>
-                                </form>
-                                <!-- <a href="/auth/twitter">Sign in with Twitter</a> -->
-                                <!-- <a href="/logout">LOG ME OUT FOO</a> -->
+                <form action="/auth/twitter" method="get" class="sign-in-form">
+                    <button class="sign-up-button" type="submit">Twitter</button>
+                </form>
+                <form ng-hide="true" action="/logout" method="get">
+                    <button class="sign-up-button" type="submit">Log Out</button>
+                </form>
+                <!-- <a href="/auth/twitter">Sign in with Twitter</a> -->
+                <!-- <a href="/logout">LOG ME OUT FOO</a> -->
 			</div>
 		</div>
 	</div>
