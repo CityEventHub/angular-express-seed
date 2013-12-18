@@ -2,8 +2,8 @@
 
 //this is the controller that handles a single event, it will contain a :id routeparam to get the event
 angular.module('CityEventHub')
-.controller('EventCtrl',['$scope','Events','$routeParams','$rootScope',
-				 function($scope,  Events,  $routeParams,$rootScope) {
+.controller('EventCtrl',['$scope','Events','$routeParams','$rootScope', 'User',
+				 function($scope,  Events, $routeParams,$rootScope, User) {
 
 	// init vars
 	$rootScope.activeTab = 2;
@@ -56,7 +56,12 @@ angular.module('CityEventHub')
 	}
 
 	function rsvp(){
-		Event.findByIdAndUpdate(req.params._id, {$inc: {RSVP: 1}});
+		// console.log($rootScope.user);
+		// $scope.user.upcomingEvents.push(event);
+		// Users.save($scope.user, function(){
+		// 	console.log("Successfully rsvped");
+		// });
+		//Event.findByIdAndUpdate(req.params._id, {$inc: {RSVP: 1}});
 	}
 
 	// export vars to $scope
@@ -68,5 +73,4 @@ angular.module('CityEventHub')
 	$scope['submitChanges'] = submitChanges;
 	$scope['isView'] = isView;
 	$scope['rsvp'] = rsvp;
-
 }]);
