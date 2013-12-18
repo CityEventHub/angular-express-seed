@@ -12,7 +12,7 @@
 				<button type="submit">Find Events</button>
 			</form> 
 		</div>
-		<div class = "host-events">
+		<div class = "host-events" ng-if="loggedIn == 0">
 			<div class="header">Hosting an Event</div>
 			<form class="sign-up" action="/api/signup" method="post">
 				<span>Sign Up</span>
