@@ -28,7 +28,7 @@
  *
  * The first callback "permissions" will run, doing some sort of permissions requirement for the user
  * If the user does not have permissions, this function will need to return a response. For example:
- *   return res && res.status(401).json({error: "Unauthorized", details: "Unauthorized"});
+ *   return res.status(401).json({error: "Unauthorized", details: "Unauthorized"});
  * This immediately finishes the route, meaning that "crud" and "doMore" will not execute
  * If permissions were fine, then permissions need to call "next();"  By calling next we excute the next callback
  *

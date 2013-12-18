@@ -2,15 +2,15 @@
 exports.permissions = function(req, res, next) {
 	// do some sort of authentication checking here
 	// if not authenticated yet, do this:
-	// return res && res.status(401).json({error: "Unauthorized", details: "Unauthorized"});
+	// return res.status(401).json({error: "Unauthorized", details: "Unauthorized"});
 
 	// do some sort of permission checking here
 	// if user does not have permissions:
-	// return res && res.status(403).json({error: "Forbidden", details: "Forbidden"});
+	// return res.status(403).json({error: "Forbidden", details: "Forbidden"});
 
 	// otherwise continue with the action
 	if (req.isAuthenticated())
-		next && next();
+		next();
 	else
 		res.redirect('/login');
 }
@@ -39,7 +39,7 @@ exports.error = function(status, err) {
 		err = {error: "Internal Server Error", details: "Intentional Error"};
 
 	return function errorRoute(req, res, next) {
-		return res && res.status(status).json(err);
+		return res.status(status).json(err);
 	}
 }
 

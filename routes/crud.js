@@ -31,20 +31,20 @@
 // Error checking helper functions
 ////
 
-function modelErr() {
+exports.modelErr = function() {
 	return function(req, res, next) {
-		return res && res.status(500).json({
+		return res.status(500).json({
 			error: "Unknown Error",
 			details: "Model not given"
 		});
 	}
 }
 
-function errorHandler(Model, req, res, next, passError, action) {
+exports.errorHandler = function(Model, req, res, next, passError, action) {
 	return function error(status, details) {
 		if(status == 500) {
-			console.error("----CRUD server error when "+action);
-			console.error("-----details: "+details);
+			console.error("--CRUD server error when "+action);
+			console.error("---details: "+details);
 		}
 		var error = {
 			error: "Error " + action + " " + Model.modelName,
@@ -52,16 +52,16 @@ function errorHandler(Model, req, res, next, passError, action) {
 			details: details
 		};
 		if(passError) {
-			req && (req.error = error);
-			next && next();
+			req.error = error;
+			next();
 
 		} else {
-			return res && res.status(status).json(error);
+			return res.status(status).json(error);
 		}
 	}
 }
 
-function prepareObj(obj, inc) {
+exports.prepareObj = function(obj, inc) {
 
 	// remove any of angular's funny business
 	for (var key in obj)
@@ -75,7 +75,7 @@ function prepareObj(obj, inc) {
 		obj['$inc'] = { __v: 1 };
 }
 
-function validateCollection(Model, collection, cb, index) {
+exports.validateCollection = function(Model, collection, cb, index) {
 	if(index == null)
 		index = collection.length-1;
 	
@@ -85,7 +85,7 @@ function validateCollection(Model, collection, cb, index) {
 			return cb(err);
 		if(index == 0)
 			return cb();
-		validateCollection(Model, collection, cb, index-1);
+		exports.validateCollection(Model, collection, cb, index-1);
 	});
 }
 
@@ -97,7 +97,7 @@ function validateCollection(Model, collection, cb, index) {
 // Because this is an odd one, we'll leave it unimplemented.  Use postCollection instead.
 exports.postDocument = function(Model, passSuccess, passError) {
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "creating");
+		var error = exports.errorHandler(Model, req, res, next, passError, "creating");
 		return error(501, "Posting on document not implemented");
 	}
 }
@@ -105,10 +105,10 @@ exports.postDocument = function(Model, passSuccess, passError) {
 // GET on document: Retrieve a document by id
 exports.getDocument = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "getting");
+		var error = exports.errorHandler(Model, req, res, next, passError, "getting");
 
 		if (!req)
 			return error(500, "No request found");
@@ -126,7 +126,7 @@ exports.getDocument = function(Model, passSuccess, passError) {
 				return res.json(result);
 
 			req.resource = result;
-			next && next();
+			next();
 		});
 	}
 }
@@ -134,10 +134,10 @@ exports.getDocument = function(Model, passSuccess, passError) {
 // PUT on document: Updates the document of the collection, or if it doesn't exist, create it.
 exports.putDocument = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "updating");
+		var error = exports.errorHandler(Model, req, res, next, passError, "updating");
 
 		if (!req)
 			return error(500, "No request found");
@@ -152,7 +152,7 @@ exports.putDocument = function(Model, passSuccess, passError) {
 		if (req.params._id != req.body._id)
 			return error(400, "_id from parameters and body do not match ("+req.params._id+" != "+req.body._id+")");
 
-		prepareObj(req.body, true);
+		exports.prepareObj(req.body, true);
 		var doc = new Model(req.body);
 
 		doc.validate(function valid(err) {
@@ -168,7 +168,7 @@ exports.putDocument = function(Model, passSuccess, passError) {
 					return res.json(result);
 				
 				req.resource = result;
-				next && next();
+				next();
 			});
 		});
 	}
@@ -177,10 +177,10 @@ exports.putDocument = function(Model, passSuccess, passError) {
 // DELETE on document: Deletes the object from the collection.
 exports.deleteDocument = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "deleting");
+		var error = exports.errorHandler(Model, req, res, next, passError, "deleting");
 
 		if (!req)
 			return error(500, "No request found");
@@ -198,7 +198,7 @@ exports.deleteDocument = function(Model, passSuccess, passError) {
 				return res.json(result);
 			
 			req.resource = result;
-			next && next();
+			next();
 		});
 	}
 }
@@ -210,10 +210,10 @@ exports.deleteDocument = function(Model, passSuccess, passError) {
 // POST on collection: Create a new document in the collection.
 exports.postCollection = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "creating");
+		var error = exports.errorHandler(Model, req, res, next, passError, "creating");
 
 		if (!req)
 			return error(500, "No request found");
@@ -224,7 +224,7 @@ exports.postCollection = function(Model, passSuccess, passError) {
 		if (req.body.__v)
 			return error(400, "New document must not have __v (versioning number)");
 
-		prepareObj(req.body, false);
+		exports.prepareObj(req.body, false);
 		var doc = new Model(req.body);
 
 		doc.validate(function valid(err) {
@@ -240,7 +240,7 @@ exports.postCollection = function(Model, passSuccess, passError) {
 					return res.json(result);
 
 				req.resource = result;
-				next && next();
+				next();
 			});
 		});
 	}
@@ -249,10 +249,10 @@ exports.postCollection = function(Model, passSuccess, passError) {
 // GET on collection: Lists the documents in the entire collection.
 exports.getCollection = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 	
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "getting all");
+		var error = exports.errorHandler(Model, req, res, next, passError, "getting all");
 
 		return Model.find(function(err, result) {
 			if (err)
@@ -263,7 +263,7 @@ exports.getCollection = function(Model, passSuccess, passError) {
 				return res.json(result);
 
 			req.resource = result;
-			next && next();
+			next();
 		});
 	}
 }
@@ -271,10 +271,10 @@ exports.getCollection = function(Model, passSuccess, passError) {
 // PUT on collection: Replaces the entire collection with another collection.
 exports.putCollection = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "replacing all");
+		var error = exports.errorHandler(Model, req, res, next, passError, "replacing all");
 
 		if (!req)
 			return error(500, "No request found");
@@ -284,7 +284,7 @@ exports.putCollection = function(Model, passSuccess, passError) {
 			return error(400, "Request body must be an array");
 
 
-		validateCollection(Model, req.body, function valid(err) {
+		exports.validateCollection(Model, req.body, function valid(err) {
 
 			if(err)
 				return error(400, err);
@@ -380,10 +380,10 @@ exports.putCollection = function(Model, passSuccess, passError) {
 // DELETE on Collection: Deletes the entire collection.
 exports.deleteCollection = function(Model, passSuccess, passError) {
 	if (!Model || !Model.modelName)
-		return modelErr();
+		return exports.modelErr();
 
 	return function(req, res, next) {
-		var error = errorHandler(Model, req, res, next, passError, "deleting all");
+		var error = exports.errorHandler(Model, req, res, next, passError, "deleting all");
 
 		// get the collection (to return)
 		return Model.find(function(err, result) {
@@ -400,7 +400,7 @@ exports.deleteCollection = function(Model, passSuccess, passError) {
 				if (!passSuccess)
 					return res.json(req.resource);
 
-				next && next();
+				next();
 			});
 		});
 
@@ -415,10 +415,10 @@ exports.deleteCollection = function(Model, passSuccess, passError) {
 function createNextDoc(Model, collection, original, undo, callback, errorCb) {
 	return function() {
 		if (collection.length == 0)
-			return callback && callback();
+			return callback();
 		var createDoc = collection.pop();
 
-		prepareObj(createDoc, false);
+		exports.prepareObj(createDoc, false);
 		var doc = new Model(createDoc);
 		return doc.save(function(err, result) {
 			if (err)
@@ -433,12 +433,12 @@ function createNextDoc(Model, collection, original, undo, callback, errorCb) {
 function updateNextDoc(Model, collection, original, undo, callback, errorCb) {
 	return function() {
 		if (collection.length == 0)
-			return callback && callback();
+			return callback();
 		
 		var updateDoc = collection.pop();
 		var id = updateDoc._id;
 		
-		prepareObj(updateDoc, true);
+		exports.prepareObj(updateDoc, true);
 		return Model.findByIdAndUpdate(id, updateDoc, function(err, result) {
 			if (err)
 				return errorCb(err);
@@ -456,7 +456,7 @@ function removeNextDoc(Model, collection, original, undo, callback, errorCb) {
 		var removeObj = popAssociativeArray(collection);
 
 		if (removeObj === null)
-			return callback && callback();
+			return callback();
 
 		var removeId = removeObj._id;
 		return Model.remove({_id : removeId}, function(err, numberRemoved) {

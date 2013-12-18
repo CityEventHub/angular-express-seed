@@ -1,7 +1,7 @@
 
 exports.load = function(crud, gm) {
 	app.get('/api/events', crud.getCollection(Event));
-	app.post('/api/events', initEventConsts, crud.postCollection(Event));
+	app.post('/api/events', gm.permissions, initEventConsts, crud.postCollection(Event, true), addEventToUser);
 
 	app.get('/api/events/:_id', crud.getDocument(Event));
 	app.put('/api/events/:_id', gm.permissions, crud.putDocument(Event));
@@ -11,11 +11,23 @@ exports.load = function(crud, gm) {
 
 function initEventConsts(req, res, next) {
 	if (req && req.body) {
-		// we'll need to set this to the user. Perhaps discover the user in permissions?
-		req.body.creator = "529d09bb554a5a3369000002";
+		req.body.creator = req.user._id;
 		req.body.rank = 0;
 		req.body.rsvp = 0;
 	}
 
-	next && next();
+	next();
+}
+
+function addEventToUser(req, res, next) {
+	req.user.myEvents.push(req.resource);
+	req.user.save(function(err) {
+		if (err) {
+			return res.status(500).json({
+				error: "Unable to save event to user",
+				details: "Created the event, but unable to save it to the user's list of events"
+			});
+		}
+		res.json(req.resource);
+	})
 }
