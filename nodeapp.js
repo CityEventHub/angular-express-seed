@@ -87,7 +87,7 @@ passport.use(new LocalStrategy(
 passport.use(new TwitterStrategy({
     consumerKey: TWITTER_CONSUMER_KEY,
     consumerSecret: TWITTER_CONSUMER_SECRET,
-    callbackURL: 'http://padme.cs.byu.edu:15213/auth/twitter/callback'
+    callbackURL: '/auth/twitter/callback'
     },
     function(token, tokenSecret, profile, done) {
         // console.log(profile);
