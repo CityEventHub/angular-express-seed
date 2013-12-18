@@ -132,7 +132,7 @@ app.get('*', function(req, res) {
 });
 
 // Start server
-app.listen(/*app.get('port')*/15213, 'padme.cs.byu.edu', function(){
+app.listen(app.get('port'), function(){
 	console.log("Express server listening on port %d in %s mode", app.get('port'), app.settings.env);
 });
 

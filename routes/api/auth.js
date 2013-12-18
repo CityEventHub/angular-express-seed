@@ -44,6 +44,25 @@ exports.load = function(crud, gm) {
 		});
 	});
 
+	app.get('/api/user', function(req, res, next) {
+		// if they are authenticated
+		if (req.isAuthenticated()) {
+			return User.findById(req.user._id, function(err, result) {
+				if (err)
+					return error(500, err);
+				if (!result)
+					return error(404, "No result returned");
+				
+				// remove sending sensitive info
+				result = result.toObject();
+				delete result.password;
+				res.json(result);
+			});
+		}
+
+		return res.status(401).json({error: "Unauthorized", details: "Unauthorized"});
+	})
+
 	function lowercaseEmail(req, res, next) {
 		var error = crud.errorHandler(User, req, res, next, false, "parsing request");
 
